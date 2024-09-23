@@ -3,7 +3,7 @@ const { fetchCryptoData } = require("../services/allcoins");
 
 const router = express.Router();
 
-router.get("/cryptocurrency/map", async (req, res) => {
+router.get("/allcoins", async (req, res) => {
   try {
     const data = await fetchCryptoData();
     res.status(200).json(data);
