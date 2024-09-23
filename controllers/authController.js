@@ -32,7 +32,7 @@ exports.signup = async (req, res) => {
     const verificationToken = generateToken(user._id);
     
     // Send verification email
-    const verificationUrl = `http://localhost:5000/api/auth/verify/${verificationToken}`;
+    const verificationUrl = `${process.env.API_URL}/auth/verify/${verificationToken}`;
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
