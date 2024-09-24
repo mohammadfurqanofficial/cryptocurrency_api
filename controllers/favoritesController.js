@@ -4,6 +4,7 @@ const User = require("../models/User");
 exports.addToFavorites = async (req, res) => {
     const userId = req.user.id; // Get the user ID from the authenticated user
     const { coinId, name, symbol, rank } = req.body; // Extract all required fields from the request body
+    console.log(req.body);
   
     try {
       // Find the user by ID
