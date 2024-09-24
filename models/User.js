@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const favoriteSchema = new mongoose.Schema({
+  coinId: { type: Number, required: true },
+  name: { type: String, required: true },
+  symbol: { type: String, required: true },
+  rank: { type: Number, required: true },
+});
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -15,10 +22,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  favorites: {
-    type: [Number], // Array of coin IDs
-    default: [],
-  },
+  favorites: [favoriteSchema],
   isVerified: {
     type: Boolean,
     default: false, // Default to false until verified
