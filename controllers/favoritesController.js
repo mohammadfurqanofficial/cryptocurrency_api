@@ -20,28 +20,35 @@ exports.getFavorites = async (req, res) => {
     }
   };
 
-exports.addToFavorites = async (req, res) => {
-const userId = req.user.id;
-const { coinId, name, symbol, rank } = req.body; // Ensure these fields are provided
-
-try {
-    const user = await User.findById(userId);
-    const coinExists = user.favorites.find(favorite => favorite.coinId === coinId);
-    if (coinExists) {
-    return res.status(400).json({ message: "Coin already in favorites" });
+  exports.addToFavorites = async (req, res) => {
+    const userId = req.user.id; // Get the user ID from the authenticated user
+    const { coinId, name, symbol, rank } = req.body; // Extract coinId, name, symbol, and rank from the request body
+  
+    try {
+      // Find the user by ID
+      const user = await User.findById(userId);
+  
+      // Check if the coin is already in the user's favorites
+      const coinExists = user.favorites.find(favorite => favorite.coinId === coinId);
+      if (coinExists) {
+        return res.status(400).json({ message: "Coin already in favorites" });
+      }
+  
+      // Add the coin to the user's favorites with additional details
+      user.favorites.push({ coinId, name, symbol, rank });
+      await user.save();
+  
+      // Respond with the updated favorites list
+      res.status(200).json({
+        message: "Coin added to favorites",
+        favorites: user.favorites,
+      });
+    } catch (error) {
+      console.error("Error adding to favorites:", error); // Log the error
+      res.status(500).json({ message: "Server error" });
     }
-
-    user.favorites.push({ coinId, name, symbol, rank });
-    await user.save();
-
-    res.status(200).json({
-    message: "Coin added to favorites",
-    favorites: user.favorites,
-    });
-} catch (error) {
-    res.status(500).json({ message: "Server error" });
-}
-};
+  };
+  
 
 // Function to remove a coin from favorites
 exports.removeFromFavorites = async (req, res) => {
