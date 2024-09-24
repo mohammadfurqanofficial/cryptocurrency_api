@@ -44,10 +44,11 @@ exports.getFavorites = async (req, res) => {
         favorites: user.favorites,
       });
     } catch (error) {
-      console.error("Error adding to favorites:", error); // Log the error
+      console.error("Error adding to favorites:", error); // Log the error for debugging
       res.status(500).json({ message: "Server error" });
     }
   };
+  
   
 
 // Function to remove a coin from favorites
