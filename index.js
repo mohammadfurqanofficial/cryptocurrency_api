@@ -22,6 +22,8 @@ app.use(cors()); // Enable CORS
 app.use('/api/auth', authRoutes); // Authentication routes
 app.use("/api", cryptoRoutes); // Add the cryptocurrency routes here
 app.use("/api/favorites", favoritesRoutes); // Add this line
+// Use the coin routes
+app.use('/api/coins', coinRoutes);
 
 // Default Route
 app.get('/', (req, res) => {
