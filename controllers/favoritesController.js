@@ -1,12 +1,11 @@
 const User = require("../models/User");
 
-// Function to Show all favorite coins
 exports.getFavorites = async (req, res) => {
     const userId = req.user.id; // Get the user ID from the authenticated user
   
     try {
       // Find the user by ID and populate the favorites
-      const user = await User.findById(userId).populate('favorites'); // Ensure you adjust the populate to match your schema
+      const user = await User.findById(userId); // No need to populate since you're storing the complete favorite schema
   
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -14,14 +13,13 @@ exports.getFavorites = async (req, res) => {
   
       // Respond with the user's favorites
       res.status(200).json({
-        favorites: user.favorites,
+        favorites: user.favorites, // Return the favorites directly
       });
     } catch (error) {
       res.status(500).json({ message: "Server error" });
     }
   };
 
-// Function to add a coin to favorites
 exports.addToFavorites = async (req, res) => {
   const userId = req.user.id; // Get the user ID from the authenticated user
   const { coinId, name, symbol, rank } = req.body; // Extract coinId, name, symbol, and rank from the request body
