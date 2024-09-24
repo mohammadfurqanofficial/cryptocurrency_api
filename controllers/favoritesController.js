@@ -1,40 +1,43 @@
-const User = require("../models/User");
+// const User = require("../models/User");
+// Function to add a coin to favorites
+const FavoriteCoin = require('../models/FavoriteCoin'); // Import the FavoriteCoin model
 
 // Function to add a coin to favorites
 exports.addToFavorites = async (req, res) => {
-    const userId = req.user.id; // Get the user ID from the authenticated user
-    const { coinId, name, symbol, rank } = req.body; // Extract all required fields from the request body
-    console.log(req.body);
-  
-    try {
-      // Find the user by ID
-      const user = await User.findById(userId);
-  
-      // Check if the user exists
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      // Check if the coin is already in the user's favorites
-      const coinExists = user.favorites.some(favorite => favorite.coinId === coinId);
-      if (coinExists) {
-        return res.status(400).json({ message: "Coin already in favorites" });
-      }
-  
-      // Add the coin to the user's favorites with additional details
-      user.favorites.push({ coinId, name, symbol, rank });
-      await user.save();
-  
-      // Respond with the updated favorites list
-      res.status(200).json({
-        message: "Coin added to favorites",
-        favorites: user.favorites,
-      });
-    } catch (error) {
-        console.error("Error adding to favorites:", error); // Log the error for debugging
-        res.status(500).json({ message: "Server error", error: error.message });
-      }
-  };
+  const userId = req.user.id; // Get the user ID from the authenticated user
+  const { coinId, name, symbol, rank } = req.body; // Extract all required fields from the request body
+
+  try {
+    // Check if the favorite coin already exists for the user
+    const existingFavorite = await FavoriteCoin.findOne({ userId, coinId });
+
+    if (existingFavorite) {
+      return res.status(400).json({ message: "Coin already in favorites" });
+    }
+
+    // Create a new favorite coin document
+    const favoriteCoin = new FavoriteCoin({
+      userId,
+      coinId,
+      name,
+      symbol,
+      rank,
+    });
+
+    // Save the favorite coin
+    await favoriteCoin.save();
+
+    // Respond with the newly added favorite coin
+    res.status(201).json({
+      message: "Coin added to favorites",
+      favoriteCoin,
+    });
+  } catch (error) {
+    console.error("Error adding to favorites:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
   
   
 

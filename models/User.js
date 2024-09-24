@@ -8,7 +8,6 @@ const favoriteSchema = new mongoose.Schema({
   rank: { type: Number, required: true },
 });
 
-
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
