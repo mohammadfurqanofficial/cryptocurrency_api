@@ -15,6 +15,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  favorites: {
+    type: [Number], // Array of coin IDs
+    default: [],
+  },
   isVerified: {
     type: Boolean,
     default: false, // Default to false until verified
