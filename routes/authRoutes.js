@@ -1,6 +1,6 @@
 const express = require('express');
 const { signup, login, verifyEmail } = require('../controllers/authController'); // Include verifyEmail
-const { protect } = require('../middlewares/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // Route for signing up new users
