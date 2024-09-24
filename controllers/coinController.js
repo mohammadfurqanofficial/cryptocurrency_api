@@ -18,7 +18,7 @@ exports.getCoinUpdates = async (req, res) => {
     // Fetch updates from CoinMarketCap API
     const response = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`, {
       headers: {
-        'X-CMC_PRO_API_KEY': 'your_api_key', // Replace with your CoinMarketCap API key
+        'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY, // Make sure to set this in your .env file
       },
     });
 
