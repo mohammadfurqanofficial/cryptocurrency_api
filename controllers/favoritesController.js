@@ -1,6 +1,28 @@
-// const User = require("../models/User");
-// Function to add a coin to favorites
 const FavoriteCoin = require('../models/FavoriteCoin'); // Import the FavoriteCoin model
+
+// Function to get all favorite coins for the user
+exports.getFavorites = async (req, res) => {
+const userId = req.user.id; // Get the user ID from the authenticated user
+
+try {
+    // Find the user by ID and populate their favorites
+    const user = await User.findById(userId).select('favorites');
+
+    if (!user) {
+    return res.status(404).json({ message: "User not found" });
+    }
+
+    // Respond with the user's favorite coins
+    res.status(200).json({
+    message: "Favorite coins retrieved successfully",
+    favorites: user.favorites,
+    });
+} catch (error) {
+    console.error("Error retrieving favorites:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error: error.message });
+}
+};  
+
 
 // Function to add a coin to favorites
 exports.addToFavorites = async (req, res) => {
