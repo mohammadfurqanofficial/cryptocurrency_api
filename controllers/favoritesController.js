@@ -5,17 +5,18 @@ exports.getFavorites = async (req, res) => {
 const userId = req.user.id; // Get the user ID from the authenticated user
 
 try {
+    const result = await FavoriteCoin.findById({ userId, coinId });
     // Find the user by ID and populate their favorites
-    const user = await User.findById(userId).select('favorites');
+    // const user = await User.findById(userId).select('favorites');
 
-    if (!user) {
+    if (!result) {
     return res.status(404).json({ message: "User not found" });
     }
 
     // Respond with the user's favorite coins
     res.status(200).json({
     message: "Favorite coins retrieved successfully",
-    favorites: user.favorites,
+    favorites: result,
     });
 } catch (error) {
     console.error("Error retrieving favorites:", error); // Log the error for debugging
@@ -81,4 +82,4 @@ exports.removeFromFavorites = async (req, res) => {
       console.error("Error removing from favorites:", error); // Log the error for debugging
       res.status(500).json({ message: "Server error", error: error.message });
     }
-  };
+};
