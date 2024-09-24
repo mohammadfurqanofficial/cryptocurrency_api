@@ -5,7 +5,7 @@ exports.getFavorites = async (req, res) => {
 const userId = req.user.id; // Get the user ID from the authenticated user
 
 try {
-    const result = await FavoriteCoin.findById({ userId, coinId });
+    const result = await FavoriteCoin.findById({ userId });
     // Find the user by ID and populate their favorites
     // const user = await User.findById(userId).select('favorites');
 
