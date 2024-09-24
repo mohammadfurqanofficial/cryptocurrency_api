@@ -35,6 +35,7 @@ exports.addToFavorites = async (req, res) => {
     }
   };
   
+  
 
 // Function to remove a coin from favorites
 // exports.removeFromFavorites = async (req, res) => {
