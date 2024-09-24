@@ -2,35 +2,27 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
-const cryptoRoutes = require("./routes/cryptoRoutes"); // Import the new crypto routes
-const favoritesRoutes = require('./routes/favoritesRoutes'); // New favorite route
-const coinRoutes = require('./routes/coinRoutes'); // Make sure this path is correct
+const cryptoRoutes = require("./routes/cryptoRoutes");
+const favoritesRoutes = require('./routes/favoritesRoutes');
+const coinRoutes = require('./routes/coinRoutes'); // Make sure the path is correct
 const cors = require('cors');
 
-// Load environment variables
 dotenv.config();
-
-// Connect to MongoDB
 connectDB();
 
 const app = express();
 
-// Middleware
-app.use(express.json()); // For parsing application/json
-app.use(cors()); // Enable CORS
+app.use(express.json());
+app.use(cors());
 
-// Routes
-app.use('/api/auth', authRoutes); // Authentication routes
-app.use("/api", cryptoRoutes); // Add the cryptocurrency routes here
-app.use("/api/favorites", favoritesRoutes); // Add this line
-// Use the coin routes
-app.use('/api/coins', coinRoutes);
+app.use('/api/auth', authRoutes);
+app.use("/api", cryptoRoutes);
+app.use("/api/favorites", favoritesRoutes);
+app.use('/api/coins', coinRoutes); // Correctly added
 
-// Default Route
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Listen to port from .env or default to 5000
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

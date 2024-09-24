@@ -4,7 +4,7 @@ const FavoriteCoin = require('../models/FavoriteCoin');
 
 // Function to get updates for the user's favorite coins
 exports.getCoinUpdates = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.id; // Ensure req.user is populated
   try {
     const favoriteCoins = await FavoriteCoin.find({ userId });
 
@@ -13,10 +13,10 @@ exports.getCoinUpdates = async (req, res) => {
     }
 
     const coinIds = favoriteCoins.map((coin) => coin.coinId).join(',');
-    
-    const apiKey = process.env.COINMARKETCAP_API_KEY; // Use environment variable for API key
+
+    const apiKey = process.env.COINMARKETCAP_API_KEY;
     const url = `https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`;
-    
+
     const response = await axios.get(url, { headers: { 'X-CMC_PRO_API_KEY': apiKey } });
     const coinData = response.data.data;
 
