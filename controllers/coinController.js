@@ -1,53 +1,39 @@
 const axios = require('axios');
-const FavoriteCoin = require('../models/FavoriteCoin'); // Import the FavoriteCoin model
-const CoinHistory = require('../models/CoinHistory'); // Import the CoinHistory model
+const CoinHistory = require('../models/CoinHistory');
+const FavoriteCoin = require('../models/FavoriteCoin');
 
-// Function to get coin updates and save to CoinHistory
+// Function to get updates for the user's favorite coins
 exports.getCoinUpdates = async (req, res) => {
+  const userId = req.user.id;
   try {
-    // Get all favorite coins for the user
-    const favorites = await FavoriteCoin.find({ userId: req.user.id }); // Make sure to provide userId
+    const favoriteCoins = await FavoriteCoin.find({ userId });
 
-    if (!favorites.length) {
-      return res.status(404).json({ message: "No favorite coins found for this user" });
+    if (favoriteCoins.length === 0) {
+      return res.status(404).json({ message: "No favorite coins to update" });
     }
 
-    // Extract coin IDs
-    const coinIds = favorites.map(fav => fav.coinId).join(',');
+    const coinIds = favoriteCoins.map((coin) => coin.coinId).join(',');
+    
+    const apiKey = process.env.COINMARKETCAP_API_KEY; // Use environment variable for API key
+    const url = `https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`;
+    
+    const response = await axios.get(url, { headers: { 'X-CMC_PRO_API_KEY': apiKey } });
+    const coinData = response.data.data;
 
-    // Fetch updates from CoinMarketCap API
-    const response = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`, {
-      headers: {
-        'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY, // Make sure to set this in your .env file
-      },
-    });
+    // Save the coin updates into CoinHistory
+    const coinHistoryEntries = Object.values(coinData).map(coin => ({
+      coinId: coin.id,
+      name: coin.name,
+      symbol: coin.symbol,
+      price: coin.quote.USD.price,
+      lastUpdated: new Date(coin.last_updated),
+    }));
 
-    const coins = response.data.data;
+    await CoinHistory.insertMany(coinHistoryEntries);
 
-    // Iterate over the coins and save their updates in CoinHistory
-    for (const id of Object.keys(coins)) {
-      const coin = coins[id];
-
-      // Create a new CoinHistory entry
-      const coinHistory = new CoinHistory({
-        coinId: coin.id,
-        name: coin.name,
-        symbol: coin.symbol,
-        rank: coin.cmc_rank,
-        price: coin.quote.USD.price,
-        lastUpdated: new Date(coin.last_updated),
-      });
-
-      // Save the coin history entry
-      await coinHistory.save();
-    }
-
-    // Respond with the updated coin history
-    res.status(200).json({
-      message: "Coin updates retrieved and saved successfully",
-    });
+    res.status(200).json({ message: "Coin updates retrieved and saved", coinData });
   } catch (error) {
-    console.error("Error retrieving coin updates:", error); // Log the error for debugging
+    console.error("Error fetching coin updates:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
