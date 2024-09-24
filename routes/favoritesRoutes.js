@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/add", protect, addToFavorites);
 
 // Route to remove a favorite
-router.post('/remove', protect, removeFromFavorites); // Protect the route with authentication middleware
+// router.post('/remove', protect, removeFromFavorites); // Protect the route with authentication middleware
 
 
 module.exports = router;
