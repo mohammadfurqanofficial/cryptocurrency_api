@@ -2,10 +2,10 @@ const axios = require('axios');
 const FavoriteCoin = require('../models/FavoriteCoin');
 const CoinHistory = require('../models/CoinHistory');
 
-// Function to get coin updates and save only the quotes to CoinHistory
+// Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
   const userId = req.user ? req.user.id : null;
-  
+
   if (!userId) {
     return res.status(400).json({ message: "Invalid user" });
   }
@@ -18,10 +18,10 @@ exports.saveCoinHistory = async (req, res) => {
       return res.status(404).json({ message: "No favorite coins found for this user" });
     }
 
-    // Extract coin IDs from the user's favorite coins
+    // Extract coin IDs from favorites
     const coinIds = favorites.map(fav => fav.coinId).join(',');
 
-    // Fetch updates from CoinMarketCap API for the favorite coin IDs
+    // Fetch updates from CoinMarketCap API
     const response = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`, {
       headers: {
         'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY, // Ensure API key is correctly set
@@ -42,6 +42,9 @@ exports.saveCoinHistory = async (req, res) => {
       // Create and save a new CoinHistory entry with only the quote details
       const coinHistory = new CoinHistory({
         coinId: coin.id,
+        name: coin.name, // Ensure to include the name
+        symbol: coin.symbol,
+        rank: coin.cmc_rank, // Assuming this exists
         price: coinQuote.price,
         volume_24h: coinQuote.volume_24h,
         percent_change_1h: coinQuote.percent_change_1h,
@@ -52,10 +55,10 @@ exports.saveCoinHistory = async (req, res) => {
         percent_change_90d: coinQuote.percent_change_90d,
         market_cap: coinQuote.market_cap,
         fully_diluted_market_cap: coinQuote.fully_diluted_market_cap,
-        lastUpdated: new Date(coin.last_updated), // Save the last updated time from the API
+        lastUpdated: new Date(coin.last_updated),
       });
 
-      await coinHistory.save(); // Save each coin's quote data to the database
+      await coinHistory.save(); // Save to the database
     }
 
     res.status(200).json({ message: "Coin quotes saved successfully" });
