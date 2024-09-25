@@ -11,6 +11,6 @@ router.post('/save-history', protect, saveCoinHistory);
 router.get('/coin-history/:coinId', getCoinHistory);
 
 // Route to get coin history by coin ID
-router.get('/all-coin-history', getCoinHistory);
+router.get('/all-coins-history', getAllCoinHistory);
 
 module.exports = router;
