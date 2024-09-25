@@ -23,16 +23,16 @@ exports.getAllCoinHistory = async (req, res) => {
     }
 };
 
-// Function to get coin history for a specific coin
+// Function to get all coin history for a specific coin
 exports.getCoinHistory = async (req, res) => {
     const { coinId } = req.params; // Get the coin ID from the request parameters
 
     try {
-        // Find the coin history based on the coin ID
-        const coinHistory = await CoinHistory.findOne({ coinId });
+        // Find all coin history records based on the coin ID
+        const coinHistory = await CoinHistory.find({ coinId });
 
-        if (!coinHistory) {
-            return res.status(404).json({ message: "Coin history not found" });
+        if (!coinHistory.length) {
+            return res.status(404).json({ message: "No coin history found for this coin" });
         }
 
         // Respond with the found coin history
@@ -45,6 +45,7 @@ exports.getCoinHistory = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
 
 // Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
