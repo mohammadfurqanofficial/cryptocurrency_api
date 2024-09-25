@@ -1,6 +1,6 @@
 const express = require('express');
+const { protect } = require("../middleware/authMiddleware"); // Assuming you have an auth middleware
 const { saveCoinHistory } = require('../controllers/coinController'); // Make sure you're correctly importing your controller
-const protect = require('../middleware/authMiddleware'); // Assuming this middleware is used for authentication
 
 const router = express.Router();
 
