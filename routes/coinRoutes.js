@@ -1,9 +1,9 @@
 const express = require('express');
-const { getCoinUpdates } = require('../controllers/coinController'); // Correctly import the controller function
+const { getCoinUpdates } = require('../controllers/coinController');
 const protect = require('../middleware/authMiddleware'); // Ensure user is authenticated
 
 const router = express.Router();
 
-router.get('/updates', protect, getCoinUpdates); // Pass the function directly
+router.get('/updates', protect, getCoinUpdates); // Protected route to get coin updates
 
-module.exports = router; // Correctly export the router
+module.exports = router;
