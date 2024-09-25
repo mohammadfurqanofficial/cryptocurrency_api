@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const cryptoRoutes = require("./routes/cryptoRoutes"); // Import the new crypto routes
 const favoritesRoutes = require('./routes/favoritesRoutes'); // New favorite route
+const coinRoutes = require('./routes/coinRoutes'); // New favorite route
 const cors = require('cors');
 
 // Load environment variables
