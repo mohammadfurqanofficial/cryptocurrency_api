@@ -42,9 +42,9 @@ exports.saveCoinHistory = async (req, res) => {
       // Create and save a new CoinHistory entry with only the quote details
       const coinHistory = new CoinHistory({
         coinId: coin.id,
-        name: coin.name, // Ensure to include the name
+        name: coin.name,
         symbol: coin.symbol,
-        rank: coin.cmc_rank, // Assuming this exists
+        rank: coin.cmc_rank,
         price: coinQuote.price,
         volume_24h: coinQuote.volume_24h,
         percent_change_1h: coinQuote.percent_change_1h,
@@ -58,7 +58,14 @@ exports.saveCoinHistory = async (req, res) => {
         lastUpdated: new Date(coin.last_updated),
       });
 
-      await coinHistory.save(); // Save to the database
+      // Save the coinHistory to the database
+      const savedCoinHistory = await coinHistory.save(); 
+
+      // Update the corresponding FavoriteCoin with the coinHistoryId
+      await FavoriteCoin.findOneAndUpdate(
+        { userId, coinId: coin.id }, // Match the favorite coin
+        { coinHistoryId: savedCoinHistory._id } // Update with the coinHistory ID
+      );
     }
 
     res.status(200).json({ message: "Coin quotes saved successfully" });

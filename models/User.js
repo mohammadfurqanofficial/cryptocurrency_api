@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+// Define the FavoriteCoin schema
 const favoriteSchema = new mongoose.Schema({
-  coinId: { type: Number, required: true },
-  name: { type: String, required: true },
-  symbol: { type: String, required: true },
-  rank: { type: Number, required: true },
-});
+  coinId: {
+    type: Number,
+    required: true,
+  },
+  // You can add other properties related to favorite coins if necessary
+}, { _id: false }); // Prevents creation of a separate _id for favorite coins
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -22,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  favorites: [favoriteSchema],
+  favorites: [favoriteSchema], // Save favorite coins here
   isVerified: {
     type: Boolean,
     default: false, // Default to false until verified
@@ -37,6 +39,7 @@ UserSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
+// Method to compare passwords
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 
 const coinHistorySchema = new mongoose.Schema({
   coinId: { type: Number, required: true },
-  name: { type: String, required: true }, // Ensure name is included
-  symbol: { type: String, required: true },
-  rank: { type: Number, required: true },
   price: { type: Number, required: true },
   volume_24h: { type: Number, required: true },
   percent_change_1h: { type: Number, required: true },
