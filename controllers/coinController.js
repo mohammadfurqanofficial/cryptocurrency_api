@@ -3,8 +3,8 @@ const CoinHistory = require('../models/CoinHistory');
 const FavoriteCoin = require('../models/FavoriteCoin');
 
 // Function to get updates for the user's favorite coins
-exports.getCoinUpdates = async (req, res) => {
-  const userId = req.user.id; // Ensure req.user is populated
+const getCoinUpdates = async (req, res) => {
+  const userId = req.user.id;
   try {
     const favoriteCoins = await FavoriteCoin.find({ userId });
 
@@ -37,3 +37,6 @@ exports.getCoinUpdates = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+module.exports = { getCoinUpdates }; // Ensure it's exported as an object with the correct function
+ 
