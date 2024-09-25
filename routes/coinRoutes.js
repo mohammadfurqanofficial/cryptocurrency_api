@@ -5,6 +5,6 @@ const { getCoinUpdates } = require('../controllers/coinController');
 const router = express.Router();
 
 
-router.post('/updates', protect, getCoinUpdates); // Protected route to get coin updates
+router.get('/updates', protect, getCoinUpdates); // Protected route to get coin updates
 
 module.exports = router;
