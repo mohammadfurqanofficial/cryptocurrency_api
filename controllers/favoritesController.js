@@ -8,7 +8,7 @@ exports.getFavorites = async (req, res) => {
   try {
       // Find all favorite coins for the user and populate the CoinHistory
       const favorites = await FavoriteCoin.find({ userId })
-          .populate('coinHistoryId'); // Populate the CoinHistory documents
+          .populate('coinHistoryId'); // Ensure 'coinHistoryId' is correctly set in schema
 
       if (!favorites.length) { // Check if there are no favorites
           return res.status(404).json({ message: "No favorite coins found for this user" });

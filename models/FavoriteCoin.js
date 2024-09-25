@@ -22,10 +22,7 @@ const favoriteCoinSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  coinHistoryIds: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'CoinHistory', // Reference to CoinHistory
-  }],
+  coinHistoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'CoinHistory' } // Ensure this line is present
 });
 
 module.exports = mongoose.model('FavoriteCoin', favoriteCoinSchema);
