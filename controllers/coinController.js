@@ -4,9 +4,11 @@ const CoinHistory = require('../models/CoinHistory'); // Import the CoinHistory 
 
 // Function to get coin updates and save to CoinHistory
 exports.getCoinUpdates = async (req, res) => {
+    const userId = req.user.id; // Get the user ID from the authenticated user
   try {
     // Get all favorite coins for the user
-    const favorites = await FavoriteCoin.find({ userId: req.user.id }); // Make sure to provide userId
+    const favorites = await FavoriteCoin.find({ userId }); // Make sure to provide userId
+    console.log(favorites);
 
     if (!favorites.length) {
       return res.status(404).json({ message: "No favorite coins found for this user" });
@@ -14,6 +16,7 @@ exports.getCoinUpdates = async (req, res) => {
 
     // Extract coin IDs
     const coinIds = favorites.map(fav => fav.coinId).join(',');
+    console.log(coinIds);
 
     // Fetch updates from CoinMarketCap API
     const response = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`, {
@@ -23,7 +26,7 @@ exports.getCoinUpdates = async (req, res) => {
     });
 
     const coins = response.data.data;
-
+    console.log(coins);
     // Iterate over the coins and save their updates in CoinHistory
     for (const id of Object.keys(coins)) {
       const coin = coins[id];
