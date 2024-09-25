@@ -1,13 +1,10 @@
 const express = require('express');
-const { getCoinUpdates, saveCoinHistory } = require('../controllers/coinController'); // Import functions from controller
-const protect = require('../middleware/authMiddleware'); // Middleware to ensure user is authenticated
+const { saveCoinHistory } = require('../controllers/coinController'); // Make sure you're correctly importing your controller
+const protect = require('../middleware/authMiddleware'); // Assuming this middleware is used for authentication
 
 const router = express.Router();
 
-// Define GET route to fetch coin updates for authenticated users
-// router.get('/updates', protect, getCoinUpdates);
-
-// Define POST route to save coin history to the database
-router.post('/save-history', protect, saveCoinHistory);
+// POST route to save coin history
+router.post('/save', protect, saveCoinHistory);
 
 module.exports = router;
