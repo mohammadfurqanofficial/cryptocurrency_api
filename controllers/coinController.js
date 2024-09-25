@@ -39,4 +39,3 @@ const getCoinUpdates = async (req, res) => {
 };
 
 module.exports = { getCoinUpdates }; // Ensure it's exported as an object with the correct function
- 

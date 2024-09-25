@@ -18,7 +18,7 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use("/api", cryptoRoutes);
 app.use("/api/favorites", favoritesRoutes);
-// app.use('/api/coins', coinRoutes); // Correctly added
+app.use('/api/coins', coinRoutes); // Correctly added
 
 app.get('/', (req, res) => {
   res.send('API is running...');
