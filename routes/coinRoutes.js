@@ -1,6 +1,6 @@
 const express = require('express');
-const { getCoinUpdates } = require('../controllers/coinController');
 const protect = require('../middleware/authMiddleware'); // Ensure user is authenticated
+const { getCoinUpdates } = require('../controllers/coinController');
 
 const router = express.Router();
 
