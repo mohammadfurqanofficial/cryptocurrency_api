@@ -2,6 +2,29 @@ const axios = require('axios');
 const FavoriteCoin = require('../models/FavoriteCoin');
 const CoinHistory = require('../models/CoinHistory');
 
+// Function to get coin history for a specific coin
+exports.getCoinHistory = async (req, res) => {
+    const { coinId } = req.params; // Get the coin ID from the request parameters
+
+    try {
+        // Find the coin history based on the coin ID
+        const coinHistory = await CoinHistory.findOne({ coinId });
+
+        if (!coinHistory) {
+            return res.status(404).json({ message: "Coin history not found" });
+        }
+
+        // Respond with the found coin history
+        res.status(200).json({
+            message: "Coin history retrieved successfully",
+            coinHistory,
+        });
+    } catch (error) {
+        console.error("Error retrieving coin history:", error); // Log the error for debugging
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
 // Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
   const userId = req.user ? req.user.id : null;
