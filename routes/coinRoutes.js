@@ -1,5 +1,5 @@
 const express = require('express');
-const { saveCoinHistory } = require('../controllers/coinController');
+const { saveCoinHistory, getCoinHistory } = require('../controllers/coinController');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
