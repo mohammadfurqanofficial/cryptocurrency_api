@@ -5,7 +5,7 @@ const protect = require('../middleware/authMiddleware'); // Middleware to ensure
 const router = express.Router();
 
 // Define GET route to fetch coin updates for authenticated users
-router.get('/updates', protect, getCoinUpdates);
+// router.get('/updates', protect, getCoinUpdates);
 
 // Define POST route to save coin history to the database
 router.post('/save-history', protect, saveCoinHistory);
