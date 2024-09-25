@@ -8,8 +8,9 @@ const router = express.Router();
 router.post("/add", protect, addToFavorites);
 
 // Route to remove a favorite
-router.delete('/remove', protect, removeFromFavorites); // Remove a coin from favorites
+router.delete('/remove', protect, removeFromFavorites);
 
-router.get('/', protect, getFavorites); // Remove a coin from favorites
+// Route to get FavoriteCoins
+router.get('/', protect, getFavorites);
 
 module.exports = router;
