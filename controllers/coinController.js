@@ -108,7 +108,7 @@ exports.saveCoinHistory = async (req, res) => {
         console.log(`Saved coinHistory with ID: ${savedCoinHistory._id}`);
 
         // Check if the favorite coin exists
-        const favoriteCoin = await FavoriteCoin.findOne({ userId, coinId: coin.id });
+        const favoriteCoin = await FavoriteCoin.findOne({ coinId: coin.id });
         if (!favoriteCoin) {
             console.error("Favorite coin not found");
             return res.status(404).json({ message: "Favorite coin not found" });
