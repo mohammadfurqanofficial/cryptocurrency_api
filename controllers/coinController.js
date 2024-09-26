@@ -87,9 +87,6 @@ exports.saveCoinHistory = async (req, res) => {
       // Create and save a new CoinHistory entry with only the quote details
       const coinHistory = new CoinHistory({
         coinId: coin.id,
-        name: coin.name,
-        symbol: coin.symbol,
-        rank: coin.cmc_rank,
         price: coinQuote.price,
         volume_24h: coinQuote.volume_24h,
         percent_change_1h: coinQuote.percent_change_1h,
