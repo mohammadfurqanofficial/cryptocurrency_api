@@ -103,34 +103,31 @@ exports.saveCoinHistory = async (req, res) => {
           lastUpdated: new Date(coin.last_updated),
         });
   
-        // Check if a FavoriteCoin exists for the user and coin
-        let favoriteCoin = await FavoriteCoin.findOne({ userId, coinId: coin.id });
+        // Save the coinHistory to the database
+        const savedCoinHistory = await coinHistory.save();
 
-        if (!favoriteCoin) {
-            // If no favorite coin exists, create a new FavoriteCoin entry
-            favoriteCoin = new FavoriteCoin({
-                userId,
-                coinId: coin.id,
-                name: coin.name,
-                symbol: coin.symbol,
-                rank: coin.cmc_rank,
-                coinHistoryIds: [savedCoinHistory._id] // Initialize with the new coin history ID
-            });
+        // Find the favorite coin document by userId and coinId
+        const favoriteCoin = await FavoriteCoin.findOne({ userId, coinId: coin.id });
 
-            await favoriteCoin.save();
-        } else {
-            // If the favorite coin exists, update it by adding the new coinHistoryId
-            await FavoriteCoin.findOneAndUpdate(
-                { userId, coinId: coin.id },
-                { $addToSet: { coinHistoryIds: savedCoinHistory._id } } // Add only if it's not already in the array
-            );
-        }
-        
+        // If the favorite coin exists, check if `coinHistoryIds` is empty
+        if (!favoriteCoin.coinHistoryIds || favoriteCoin.coinHistoryIds.length === 0) {
+          // If it's empty, add the new `coinHistoryId`
+          await FavoriteCoin.findOneAndUpdate(
+              { userId, coinId: coin.id },
+              { $addToSet: { coinHistoryIds: savedCoinHistory._id } } // Add to the array
+          );
+      } else {
+          // If it already has `coinHistoryIds`, update by appending the new `coinHistoryId`
+          await FavoriteCoin.findOneAndUpdate(
+              { userId, coinId: coin.id },
+              { $push: { coinHistoryIds: savedCoinHistory._id } } // Use $push to add to the existing array
+          );
       }
-  
-      res.status(200).json({ message: "Coin quotes saved successfully" });
-    } catch (error) {
-      console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
-      res.status(500).json({ message: "Server error", error: error.message });
     }
-  };  
+
+    res.status(200).json({ message: "Coin quotes saved successfully" });
+} catch (error) {
+    console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+}
+};
