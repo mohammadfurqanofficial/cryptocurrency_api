@@ -106,15 +106,13 @@ exports.saveCoinHistory = async (req, res) => {
         // Save the coinHistory to the database
         const savedCoinHistory = await coinHistory.save(); 
         
-        // Update the favoriteCoin to include the coinHistoryId
-        favoriteCoin.coinHistoryId = savedCoinHistory._id;
-        await favoriteCoin.save();
-
         // Update the corresponding FavoriteCoin by adding the coinHistoryId to the array
-        // await FavoriteCoin.findOneAndUpdate(
-        //   { userId, coinId: coin.id }, // Match the favorite coin
-        //   { $addToSet: { coinHistoryIds: savedCoinHistory._id } } // Use $addToSet to add coinHistoryId
-        // );
+        await FavoriteCoin.findOneAndUpdate(
+          { userId, coinId: coin.id }, 
+          { $addToSet: { coinHistoryIds: savedCoinHistory._id } }, 
+          { new: true } // This option returns the updated document
+        );
+        
       }
   
       res.status(200).json({ message: "Coin quotes saved successfully" });
