@@ -103,15 +103,28 @@ exports.saveCoinHistory = async (req, res) => {
           lastUpdated: new Date(coin.last_updated),
         });
   
-        // Save the coinHistory to the database
-        const savedCoinHistory = await coinHistory.save(); 
-        
-        // Update the corresponding FavoriteCoin by adding the coinHistoryId to the array
-        await FavoriteCoin.findOneAndUpdate(
-          { userId, coinId: coin.id }, 
-          { $addToSet: { coinHistoryIds: savedCoinHistory._id } }, 
-          { new: true } // This option returns the updated document
-        );
+        // Check if a FavoriteCoin exists for the user and coin
+        let favoriteCoin = await FavoriteCoin.findOne({ userId, coinId: coin.id });
+
+        if (!favoriteCoin) {
+            // If no favorite coin exists, create a new FavoriteCoin entry
+            favoriteCoin = new FavoriteCoin({
+                userId,
+                coinId: coin.id,
+                name: coin.name,
+                symbol: coin.symbol,
+                rank: coin.cmc_rank,
+                coinHistoryIds: [savedCoinHistory._id] // Initialize with the new coin history ID
+            });
+
+            await favoriteCoin.save();
+        } else {
+            // If the favorite coin exists, update it by adding the new coinHistoryId
+            await FavoriteCoin.findOneAndUpdate(
+                { userId, coinId: coin.id },
+                { $addToSet: { coinHistoryIds: savedCoinHistory._id } } // Add only if it's not already in the array
+            );
+        }
         
       }
   
