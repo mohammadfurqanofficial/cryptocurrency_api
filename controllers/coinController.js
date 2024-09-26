@@ -105,29 +105,25 @@ exports.saveCoinHistory = async (req, res) => {
   
         // Save the coinHistory to the database
         const savedCoinHistory = await coinHistory.save();
+        console.log(`Saved coinHistory with ID: ${savedCoinHistory._id}`);
 
-        // Find the favorite coin document by userId and coinId
+        // Check if the favorite coin exists
         const favoriteCoin = await FavoriteCoin.findOne({ userId, coinId: coin.id });
+        if (!favoriteCoin) {
+            console.error("Favorite coin not found");
+            return res.status(404).json({ message: "Favorite coin not found" });
+        }
 
-        // If the favorite coin exists, check if `coinHistoryIds` is empty
-        if (!favoriteCoin.coinHistoryIds || favoriteCoin.coinHistoryIds.length === 0) {
-          // If it's empty, add the new `coinHistoryId`
-          await FavoriteCoin.findOneAndUpdate(
-              { userId, coinId: coin.id },
-              { $addToSet: { coinHistoryIds: savedCoinHistory._id } } // Add to the array
-          );
-      } else {
-          // If it already has `coinHistoryIds`, update by appending the new `coinHistoryId`
-          await FavoriteCoin.findOneAndUpdate(
-              { userId, coinId: coin.id },
-              { $push: { coinHistoryIds: savedCoinHistory._id } } // Use $push to add to the existing array
-          );
+        // Update the coinHistoryIds array
+        favoriteCoin.coinHistoryIds.addToSet(savedCoinHistory._id); // Add if not already present
+        await favoriteCoin.save(); // Save the updated favorite coin
+        console.log(`Updated FavoriteCoin: ${favoriteCoin}`);
+        
       }
+  
+      res.status(200).json({ message: "Coin quotes saved successfully" });
+    } catch (error) {
+      console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
+      res.status(500).json({ message: "Server error", error: error.message });
     }
-
-    res.status(200).json({ message: "Coin quotes saved successfully" });
-} catch (error) {
-    console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
-}
-};
+  };  
