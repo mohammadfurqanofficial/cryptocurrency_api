@@ -33,10 +33,13 @@ exports.getCoinHistory = async (req, res) => {
       console.log("Coin ID:", coinId);
       console.log("User ID:", req.user.id); // Log the user ID
 
+      // Convert userId to ObjectId
+      const userId = new mongoose.Types.ObjectId(req.user.id);
+
       // Find the favorite coin based on the coin ID and user ID
       const favoriteCoin = await FavoriteCoin.findOne({ 
           coinId: coinId, // Keep coinId as string
-          userId: new mongoose.Types.ObjectId(req.user.id) // Ensure ObjectId is used
+          userId: userId // Ensure ObjectId is used
       });
 
       console.log("Favorite Coin found:", favoriteCoin);
@@ -47,6 +50,8 @@ exports.getCoinHistory = async (req, res) => {
 
       // Find all coin history records based on the coin ID (convert to number for comparison)
       const coinHistory = await CoinHistory.find({ coinId: Number(coinId) });
+
+      console.log("Coin History found:", coinHistory);
 
       if (!coinHistory.length) {
           return res.status(404).json({ message: "No coin history found for this coin" });
