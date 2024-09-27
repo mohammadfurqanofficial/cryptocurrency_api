@@ -31,14 +31,18 @@ exports.getCoinHistory = async (req, res) => {
   if (!userId) {
     return res.status(400).json({ message: "Invalid user" });
   }
+  console.log("Querying with coinId:", coinId, "and userId:", userId);
 
   try {
+    // Fetch all favorite coins for the user and coin ID
+    const favorites = await FavoriteCoin.find({ userId, coinId: Number(coinId) });
 
-      // Find all coin history records based on the coin ID
-      const coinHistory = await CoinHistory.find({ coinId });
+    if (!favorites.length) {
+      console.log("No favorites found for this coin and user.");
+      return res.status(404).json({ message: "No favorite coin found for this coin" });
+    }
 
-      // Fetch all favorite coins for the user
-      const favorites = await FavoriteCoin.find({ coinId });
+    console.log("Favorite Coin Details:", favorites);
 
       if (!coinHistory.length) {
           return res.status(404).json({ message: "No coin history found for this coin" });
