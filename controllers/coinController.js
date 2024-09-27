@@ -35,7 +35,7 @@ exports.getCoinHistory = async (req, res) => {
       // Find the favorite coin based on the coin ID and user ID
       const favoriteCoin = await FavoriteCoin.findOne({ 
           coinId, 
-          userId: mongoose.Types.ObjectId(req.user.id) // Convert userId to ObjectId
+          userId: new mongoose.Types.ObjectId(req.user.id) // Use 'new' to create an ObjectId
       });
 
       console.log("Favorite Coin found:", favoriteCoin);
@@ -67,7 +67,6 @@ exports.getCoinHistory = async (req, res) => {
       res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 
 // Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
