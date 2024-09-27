@@ -29,7 +29,9 @@ exports.getCoinHistory = async (req, res) => {
   const { coinId } = req.params; // Get the coin ID from the request parameters
 
   try {
-    const favoriteCoin = await FavoriteCoin.find();
+    // Find the specific favorite coin for the authenticated user and coin ID
+    const favoriteCoin = await FavoriteCoin.findOne({ userId, coinId });
+    
     console.log("Favorite Coin Data:", favoriteCoin);
 
     if (!favoriteCoin) {
@@ -38,6 +40,7 @@ exports.getCoinHistory = async (req, res) => {
 
     // Find all coin history records based on the coin ID
     const coinHistory = await CoinHistory.find({ coinId });
+
     if (!coinHistory.length) {
       return res.status(404).json({ message: "No coin history found for this coin" });
     }
@@ -59,6 +62,7 @@ exports.getCoinHistory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
