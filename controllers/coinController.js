@@ -27,15 +27,10 @@ exports.getAllCoinHistory = async (req, res) => {
 exports.getCoinHistory = async (req, res) => {
   const userId = req.user.id; // Get the user ID from the authenticated user
   const { coinId } = req.params; // Get the coin ID from the request parameters
-  console.log("Querying FavoriteCoin with:", { coinId, userId });
 
   try {
-
-
-    const favoriteCoin = await FavoriteCoin.findOne({ userId, coinId: Number(coinId) });
-    
+    const favoriteCoin = await FavoriteCoin.find();
     console.log("Favorite Coin Data:", favoriteCoin);
-    
 
     if (!favoriteCoin) {
       return res.status(404).json({ message: "No favorite coin found for this coin" });
