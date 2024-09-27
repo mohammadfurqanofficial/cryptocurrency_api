@@ -25,39 +25,44 @@ exports.getAllCoinHistory = async (req, res) => {
 
 // Function to get specific favorite coin and its all coin history
 exports.getCoinHistory = async (req, res) => {
-    const { coinId } = req.params; // Get the coin ID from the request parameters
+  const { coinId } = req.params; // Get the coin ID from the request parameters
 
-    try {
-        // Find the favorite coin based on the coin ID and user ID
-        const favoriteCoin = await FavoriteCoin.findOne({ coinId, userId: req.user.id });
+  try {
+      console.log("Searching for favorite coin with coinId:", coinId, "and userId:", req.user.id);
 
-        if (!favoriteCoin) {
-            return res.status(404).json({ message: "No favorite coin found for this coin" });
-        }
+      // Find the favorite coin based on the coin ID and user ID
+      const favoriteCoin = await FavoriteCoin.findOne({ coinId, userId: req.user.id });
 
-        // Find all coin history records based on the coin ID
-        const coinHistory = await CoinHistory.find({ coinId });
+      console.log("Favorite Coin found:", favoriteCoin);
 
-        if (!coinHistory.length) {
-            return res.status(404).json({ message: "No coin history found for this coin" });
-        }
+      if (!favoriteCoin) {
+          return res.status(404).json({ message: "No favorite coin found for this coin" });
+      }
 
-        // Respond with the favorite coin details and coin history
-        res.status(200).json({
-            message: "Coin history retrieved successfully",
-            coin: {
-                coinId: favoriteCoin.coinId,
-                name: favoriteCoin.name,
-                symbol: favoriteCoin.symbol,
-                rank: favoriteCoin.rank,
-            },
-            history: coinHistory,
-        });
-    } catch (error) {
-        console.error("Error retrieving coin history:", error); // Log the error for debugging
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
+      // Find all coin history records based on the coin ID
+      const coinHistory = await CoinHistory.find({ coinId });
+
+      if (!coinHistory.length) {
+          return res.status(404).json({ message: "No coin history found for this coin" });
+      }
+
+      // Respond with the favorite coin details and coin history
+      res.status(200).json({
+          message: "Coin history retrieved successfully",
+          coin: {
+              coinId: favoriteCoin.coinId,
+              name: favoriteCoin.name,
+              symbol: favoriteCoin.symbol,
+              rank: favoriteCoin.rank,
+          },
+          history: coinHistory,
+      });
+  } catch (error) {
+      console.error("Error retrieving coin history:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
+
 
 
 // Function to save coin history from favorite coins
