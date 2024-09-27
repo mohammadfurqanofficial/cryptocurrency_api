@@ -34,7 +34,7 @@ exports.getCoinHistory = async (req, res) => {
 
   try {
       // Fetch all favorite coins for the user
-      const favorites = await FavoriteCoin.findOne({ userId, coinId: Number(coinId) });
+      const favorites = await FavoriteCoin.findOne({ userId });
 
       // Find all coin history records based on the coin ID
       const coinHistory = await CoinHistory.find({ coinId });
