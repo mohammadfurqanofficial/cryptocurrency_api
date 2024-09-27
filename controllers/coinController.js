@@ -27,10 +27,9 @@ exports.getAllCoinHistory = async (req, res) => {
 exports.getCoinHistory = async (req, res) => {
   const userId = req.user ? req.user.id : null;
   const { coinId } = req.params; // Get the coin ID from the request parameters
-
   try {
       // Fetch all favorite coins for the user
-      const favorites = await FavoriteCoin.find({ coinId });
+      const favorites = await FavoriteCoin.find({ userId, coinId });
 
       // Find all coin history records based on the coin ID
       const coinHistory = await CoinHistory.find({ coinId });
@@ -42,6 +41,7 @@ exports.getCoinHistory = async (req, res) => {
       // Respond with the found coin history
       res.status(200).json({
           message: "Coin history retrieved successfully",
+          userId,
           favorites,
           coinHistory,
       });
