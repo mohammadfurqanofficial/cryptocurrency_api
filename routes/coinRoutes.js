@@ -8,9 +8,9 @@ const router = express.Router();
 router.post('/save-history', protect, saveCoinHistory);
 
 // Route to get coin history by coin ID
-router.get('/coin-history/:coinId', getCoinHistory);
+router.get('/coin-history/:coinId', protect, getCoinHistory);
 
 // Route to get coin history by coin ID
-router.get('/all-coins-history', getAllCoinHistory);
+router.get('/all-coins-history', protect, getAllCoinHistory);
 
 module.exports = router;
