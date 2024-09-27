@@ -38,7 +38,7 @@ exports.getCoinHistory = async (req, res) => {
       const coinHistory = await CoinHistory.find({ coinId });
 
       // Fetch all favorite coins for the user
-      const favorites = await FavoriteCoin.findOne({ userId });
+      const favorites = await FavoriteCoin.find({ userId });
 
       if (!coinHistory.length) {
           return res.status(404).json({ message: "No coin history found for this coin" });
