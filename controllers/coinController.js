@@ -30,12 +30,13 @@ exports.getCoinHistory = async (req, res) => {
   const { coinId } = req.params; // Get the coin ID from the request parameters
 
   try {
-      console.log("Searching for favorite coin with coinId:", coinId, "and userId:", req.user.id);
+      console.log("Coin ID:", coinId);
+      console.log("User ID:", req.user.id); // Log the user ID
 
       // Find the favorite coin based on the coin ID and user ID
       const favoriteCoin = await FavoriteCoin.findOne({ 
-          coinId, 
-          userId: new mongoose.Types.ObjectId(req.user.id) // Use 'new' to create an ObjectId
+          coinId: coinId, // Keep coinId as string
+          userId: new mongoose.Types.ObjectId(req.user.id) // Ensure ObjectId is used
       });
 
       console.log("Favorite Coin found:", favoriteCoin);
@@ -44,8 +45,8 @@ exports.getCoinHistory = async (req, res) => {
           return res.status(404).json({ message: "No favorite coin found for this coin" });
       }
 
-      // Find all coin history records based on the coin ID
-      const coinHistory = await CoinHistory.find({ coinId });
+      // Find all coin history records based on the coin ID (convert to number for comparison)
+      const coinHistory = await CoinHistory.find({ coinId: Number(coinId) });
 
       if (!coinHistory.length) {
           return res.status(404).json({ message: "No coin history found for this coin" });
