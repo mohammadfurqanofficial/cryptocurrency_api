@@ -25,41 +25,31 @@ exports.getAllCoinHistory = async (req, res) => {
 
 // Function to get all coin history for a specific coin
 exports.getCoinHistory = async (req, res) => {
-  const userId = req.user.id; // Get the user ID from the authenticated user
   const { coinId } = req.params; // Get the coin ID from the request parameters
+  const userId = req.user ? req.user.id : null;
+
+  if (!userId) {
+    return res.status(400).json({ message: "Invalid user" });
+  }
 
   try {
-    // Find the specific favorite coin for the authenticated user and coin ID
-    const favoriteCoin = await FavoriteCoin.findOne({ userId, coinId });
-    
-    console.log("Favorite Coin Data:", favoriteCoin);
+      // Fetch all favorite coins for the user
+      const favorites = await FavoriteCoin.find({ userId });
+      // Find all coin history records based on the coin ID
+      const coinHistory = await CoinHistory.find({ coinId });
 
-    if (!favoriteCoin) {
-      return res.status(404).json({ message: "No favorite coin found for this coin" });
-    }
+      if (!coinHistory.length) {
+          return res.status(404).json({ message: "No coin history found for this coin" });
+      }
 
-    // Find all coin history records based on the coin ID
-    const coinHistory = await CoinHistory.find({ coinId });
-
-    if (!coinHistory.length) {
-      return res.status(404).json({ message: "No coin history found for this coin" });
-    }
-
-    // Respond with the favorite coin details and coin history
-    res.status(200).json({
-      message: "Coin history retrieved successfully",
-      userId,
-      coin: {
-        coinId: favoriteCoin.coinId,
-        name: favoriteCoin.name,
-        symbol: favoriteCoin.symbol,
-        rank: favoriteCoin.rank,
-      },
-      history: coinHistory,
-    });
+      // Respond with the found coin history
+      res.status(200).json({
+          message: "Coin history retrieved successfully",
+          favorites,
+      });
   } catch (error) {
-    console.error("Error retrieving coin history:", error); // Log the error for debugging
-    res.status(500).json({ message: "Server error", error: error.message });
+      console.error("Error retrieving coin history:", error); // Log the error for debugging
+      res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
