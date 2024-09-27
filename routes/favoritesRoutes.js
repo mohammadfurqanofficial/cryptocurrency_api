@@ -14,6 +14,6 @@ router.delete('/remove', protect, removeFromFavorites);
 router.get('/', protect, getFavorites);
 
 // Route to get FavoriteCoins
-router.get('/all-favorites', getallFavorites);
+router.get('/all-favorites', protect, getallFavorites);
 
 module.exports = router;
