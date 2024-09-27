@@ -28,21 +28,36 @@ exports.getCoinHistory = async (req, res) => {
   const { coinId } = req.params; // Get the coin ID from the request parameters
 
   try {
-      // Find all coin history records based on the coin ID
-      const coinHistory = await CoinHistory.find({ coinId });
+    // Find the favorite coin based on the coin ID
+    const favoriteCoin = await FavoriteCoin.findOne({ coinId });
 
-      if (!coinHistory.length) {
-          return res.status(404).json({ message: "No coin history found for this coin" });
-      }
+    // If no favorite coin is found, return a 404 error
+    if (!favoriteCoin) {
+      return res.status(404).json({ message: "No favorite coin found for this coin" });
+    }
 
-      // Respond with the found coin history
-      res.status(200).json({
-          message: "Coin history retrieved successfully",
-          coinHistory,
-      });
+    // Find all coin history records based on the coin ID
+    const coinHistory = await CoinHistory.find({ coinId });
+
+    // If no coin history is found, return a 404 error
+    if (!coinHistory.length) {
+      return res.status(404).json({ message: "No coin history found for this coin" });
+    }
+
+    // Respond with the favorite coin details and coin history
+    res.status(200).json({
+      message: "Coin history retrieved successfully",
+      coin: {
+        coinId: favoriteCoin.coinId,
+        name: favoriteCoin.name,
+        symbol: favoriteCoin.symbol,
+        rank: favoriteCoin.rank,
+      },
+      history: coinHistory,
+    });
   } catch (error) {
-      console.error("Error retrieving coin history:", error); // Log the error for debugging
-      res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error retrieving coin history:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
