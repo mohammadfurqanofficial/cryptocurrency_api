@@ -29,26 +29,36 @@ exports.getCoinHistory = async (req, res) => {
   const { coinId } = req.params; // Get the coin ID from the request parameters
 
   try {
-      // Find all coin history records based on the coin ID
-      const favorites = await FavoriteCoin.find({ userId, coinId });
-      console.log("Favorite Coin Details", favorites);
-      const coinHistory = await CoinHistory.find({ coinId });
-      console.log("Coin History Details", coinHistory);
-      if (!coinHistory.length) {
-          return res.status(404).json({ message: "No coin history found for this coin" });
-      }
+    // Find the favorite coin details based on the coin ID
+    const favoriteCoin = await FavoriteCoin.findOne({ coinId });
+    if (!favoriteCoin) {
+      return res.status(404).json({ message: "No favorite coin found for this coin" });
+    }
 
-      // Respond with the found coin history
-      res.status(200).json({
-          message: "Coin history retrieved successfully",
-          userId,
-          favorites,
-      });
+    // Find all coin history records based on the coin ID
+    const coinHistory = await CoinHistory.find({ coinId });
+    if (!coinHistory.length) {
+      return res.status(404).json({ message: "No coin history found for this coin" });
+    }
+
+    // Respond with the favorite coin details and coin history
+    res.status(200).json({
+      message: "Coin history retrieved successfully",
+      userId,
+      coin: {
+        coinId: favoriteCoin.coinId,
+        name: favoriteCoin.name,
+        symbol: favoriteCoin.symbol,
+        rank: favoriteCoin.rank,
+      },
+      history: coinHistory, // Include the coin history in the response
+    });
   } catch (error) {
-      console.error("Error retrieving coin history:", error); // Log the error for debugging
-      res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error retrieving coin history:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 
 // Function to save coin history from favorite coins
