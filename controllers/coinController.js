@@ -40,7 +40,7 @@ exports.getCoinHistory = async (req, res) => {
       // Respond with the found coin history
       res.status(200).json({
           message: "Coin history retrieved successfully",
-          coinHistory,
+          favorites,
       });
   } catch (error) {
       console.error("Error retrieving coin history:", error); // Log the error for debugging
