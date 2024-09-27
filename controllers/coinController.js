@@ -1,4 +1,6 @@
 const axios = require('axios');
+const mongoose = require('mongoose'); // Ensure you have mongoose imported at the top if not already
+
 const FavoriteCoin = require('../models/FavoriteCoin');
 const CoinHistory = require('../models/CoinHistory');
 
@@ -23,7 +25,7 @@ exports.getAllCoinHistory = async (req, res) => {
   }
 };
 
-// Function to get specific favorite coin and its all coin history
+// Function to get coin history for a specific coin
 exports.getCoinHistory = async (req, res) => {
   const { coinId } = req.params; // Get the coin ID from the request parameters
 
@@ -31,7 +33,10 @@ exports.getCoinHistory = async (req, res) => {
       console.log("Searching for favorite coin with coinId:", coinId, "and userId:", req.user.id);
 
       // Find the favorite coin based on the coin ID and user ID
-      const favoriteCoin = await FavoriteCoin.findOne({ coinId, userId: req.user.id });
+      const favoriteCoin = await FavoriteCoin.findOne({ 
+          coinId, 
+          userId: mongoose.Types.ObjectId(req.user.id) // Convert userId to ObjectId
+      });
 
       console.log("Favorite Coin found:", favoriteCoin);
 
@@ -58,11 +63,10 @@ exports.getCoinHistory = async (req, res) => {
           history: coinHistory,
       });
   } catch (error) {
-      console.error("Error retrieving coin history:", error);
+      console.error("Error retrieving coin history:", error); // Log the error for debugging
       res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 
 
 // Function to save coin history from favorite coins
