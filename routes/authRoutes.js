@@ -16,6 +16,7 @@ router.get('/profile', protect, (req, res) => {
     id: req.user._id,
     name: req.user.name,
     email: req.user.email,
+    favoriteCoins: req.user.favoriteCoins,
   });
 });
 
