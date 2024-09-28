@@ -25,6 +25,7 @@ exports.getAllCoinHistory = async (req, res) => {
 
 // Function to get all coin history for a specific coin
 exports.getCoinHistory = async (req, res) => {
+  const userId = req.user ? req.user.id : null;
   const { coinId } = req.params; // Get the coin ID from the request parameters
 
   try {
