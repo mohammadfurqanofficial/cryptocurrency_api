@@ -47,31 +47,7 @@ exports.getCoinHistory = async (req, res) => {
 };
 
 
-const { coinId } = req.params; // Get the coin ID from the request parameters
 
-    try {
-        const userId = mongoose.Types.ObjectId(req.user.id); // Convert userId to ObjectId
-
-        // Find the favorite coin based on the userId and coinId and populate the coinHistoryId field
-        const favoriteCoin = await FavoriteCoin.findOne({ 
-            coinId: String(coinId), 
-            userId 
-        }).populate('coinHistoryId'); // Populate the related coin history
-
-        if (!favoriteCoin) {
-            return res.status(404).json({ message: "No favorite coin found for this coin" });
-        }
-
-        // Respond with the favorite coin and its populated history
-        res.status(200).json({
-            message: "Favorite coin retrieved successfully",
-            favoriteCoin
-        });
-    } catch (error) {
-        console.error("Error retrieving favorite coin and history:", error); // Log the error for debugging
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
-};
 
 
 // Function to save coin history from favorite coins
