@@ -1,4 +1,5 @@
 const axios = require('axios');
+const mongoose = require('mongoose');
 const FavoriteCoin = require('../models/FavoriteCoin');
 const CoinHistory = require('../models/CoinHistory');
 
