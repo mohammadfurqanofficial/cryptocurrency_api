@@ -30,10 +30,10 @@ exports.getCoinHistory = async (req, res) => {
   try {
 
       const favorites = await FavoriteCoin.find({
-        userId: userId,  // Replace with the actual userId variable
-        coinId: coinId   // Replace with the actual coinId variable
+        coinId: coinId,   // Replace with the actual coinId variable
+        userId: userId  // Replace with the actual userId variable
       });
-
+      console.log(favorites);
       // Find all coin history records based on the coin ID
       const coinHistory = await CoinHistory.find({ coinId });
 
