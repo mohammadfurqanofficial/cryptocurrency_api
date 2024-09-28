@@ -29,8 +29,10 @@ exports.getCoinHistory = async (req, res) => {
 
   try {
 
-      // // Fetch all favorite coins for the user
-      // const favorites = await FavoriteCoin.find({ userId });
+      const favorites = await FavoriteCoin.find({
+        userId: userId,  // Replace with the actual userId variable
+        coinId: coinId   // Replace with the actual coinId variable
+      });
 
       // Find all coin history records based on the coin ID
       const coinHistory = await CoinHistory.find({ coinId });
@@ -42,6 +44,7 @@ exports.getCoinHistory = async (req, res) => {
       // Respond with the found coin history
       res.status(200).json({
           message: "Coin history retrieved successfully",
+          favorites,
           coinHistory,
       });
   } catch (error) {
