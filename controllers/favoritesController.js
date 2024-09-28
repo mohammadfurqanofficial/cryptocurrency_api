@@ -1,5 +1,6 @@
 const FavoriteCoin = require('../models/FavoriteCoin'); // Import the FavoriteCoin model
 const CoinHistory = require('../models/CoinHistory'); // Import the CoinHistory model
+const User = require('../models/User');
 
 // Function to get all favorite coins along with their history
 exports.getallFavorites = async (req, res) => {
@@ -73,6 +74,13 @@ exports.addToFavorites = async (req, res) => {
 
     // Save the favorite coin
     await favoriteCoin.save();
+
+    // After saving the favorite coin, update the User model with the favoriteCoin._id
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { favoriteCoins: favoriteCoin._id } }, // Add the favorite coin ID to the user's favoriteCoins array
+      { new: true, useFindAndModify: false } // Ensure we get the updated user document
+    );
 
     // Respond with the newly added favorite coin
     res.status(201).json({

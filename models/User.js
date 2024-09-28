@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  favorites: [favoriteSchema], // Save favorite coins here
+  favoriteCoins: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FavoriteCoin' }], // Array of favorite coin IDs
   isVerified: {
     type: Boolean,
     default: false, // Default to false until verified
