@@ -65,7 +65,6 @@ exports.addToFavorites = async (req, res) => {
 
     // Create a new favorite coin document
     const favoriteCoin = new FavoriteCoin({
-      userId,
       coinId,
       name,
       symbol,
