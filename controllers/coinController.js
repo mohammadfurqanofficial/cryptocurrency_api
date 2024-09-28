@@ -29,7 +29,7 @@ exports.getCoinHistory = async (req, res) => {
   const { coinId } = req.params; // Get the coin ID from the request parameters
   try {
       const favorites = await FavoriteCoin.find({
-        userId: "66f1898be638f548a8f700b7",  // Replace with the actual userId variable
+        // userId: "66f1898be638f548a8f700b7",  // Replace with the actual userId variable
         coinId: "131",
       });
       console.log(favorites);
