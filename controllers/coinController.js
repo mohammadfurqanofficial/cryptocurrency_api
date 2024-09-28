@@ -25,33 +25,30 @@ exports.getAllCoinHistory = async (req, res) => {
 
 // Function to get all coin history for a specific coin
 exports.getCoinHistory = async (req, res) => {
-  const userId = req.user ? req.user.id : null;
-  const { coinId } = req.params; // Get the coin ID from the request parameters
-  try {
-      const favorites = await FavoriteCoin.find({
-        // userId: "66f1898be638f548a8f700b7",  // Replace with the actual userId variable
-        coinId: "131",
-      });
-      console.log(favorites);
-      // Find all coin history records based on the coin ID
-      const coinHistory = await CoinHistory.find({ coinId });
+const { coinId } = req.params; // Get the coin ID from the request parameters
 
-      if (!coinHistory.length) {
-          return res.status(404).json({ message: "No coin history found for this coin" });
-      }
+    try {
+        const userId = mongoose.Types.ObjectId(req.user.id); // Convert userId to ObjectId
 
-      // Respond with the found coin history
-      res.status(200).json({
-          message: "Coin history retrieved successfully",
-          coinId,
-          userId,
-          favorites,
-          coinHistory,
-      });
-  } catch (error) {
-      console.error("Error retrieving coin history:", error); // Log the error for debugging
-      res.status(500).json({ message: "Server error", error: error.message });
-  }
+        // Find the favorite coin based on the userId and coinId and populate the coinHistoryId field
+        const favoriteCoin = await FavoriteCoin.findOne({ 
+            coinId: String(coinId), 
+            userId 
+        }).populate('coinHistoryId'); // Populate the related coin history
+
+        if (!favoriteCoin) {
+            return res.status(404).json({ message: "No favorite coin found for this coin" });
+        }
+
+        // Respond with the favorite coin and its populated history
+        res.status(200).json({
+            message: "Favorite coin retrieved successfully",
+            favoriteCoin
+        });
+    } catch (error) {
+        console.error("Error retrieving favorite coin and history:", error); // Log the error for debugging
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
 };
 
 
