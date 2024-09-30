@@ -32,17 +32,16 @@ exports.getCoinHistory = async (req, res) => {
   try {
       // Find the user by ID and populate the favoriteCoins array
       const user = await User.findById(userId).populate({
-        path: 'favoriteCoins', // Populate favoriteCoins field
+        path: 'favoriteCoins',
+        match: { coinId }, // Filter to match specific coinId
         populate: {
-          path: 'coinHistoryId'
-        }
+          path: 'coinHistoryId', // Populate the coin history for the favorite coin
+        },
       });
       console.log(user);
 
       // Find all coin history records based on the coin ID
-      const coinHistory = await CoinHistory.find({ coinId }).populate({
-        path: 'favoriteCoins'
-      });
+      const coinHistory = await CoinHistory.find({ coinId });
 
       if (!coinHistory.length) {
           return res.status(404).json({ message: "No coin history found for this coin" });
