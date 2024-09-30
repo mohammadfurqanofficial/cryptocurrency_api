@@ -7,7 +7,7 @@ const User = require('../models/User');
 exports.getAllCoinHistory = async (req, res) => {
   try {
       // Retrieve all coin history entries
-      const coinHistories = await CoinHistory.find();
+      const coinHistories = await CoinHistory.find({ userId });
 
       if (!coinHistories.length) {
           return res.status(404).json({ message: "No coin history found" });
@@ -46,6 +46,7 @@ exports.getCoinHistory = async (req, res) => {
       res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
@@ -113,7 +114,7 @@ exports.saveCoinHistory = async (req, res) => {
 
       // Update the corresponding FavoriteCoin with the coinHistoryId
       await FavoriteCoin.findOneAndUpdate(
-        { userId, coinId: coin.id }, // Match the favorite coin
+        { coinId: coin.id }, // Match the favorite coin
         { coinHistoryId: savedCoinHistory._id } // Update with the coinHistory ID
       );
     }
