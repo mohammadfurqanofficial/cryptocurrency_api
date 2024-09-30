@@ -1,6 +1,6 @@
 const express = require("express");
 const { protect } = require("../middleware/authMiddleware"); // Assuming you have an auth middleware
-const { addToFavorites, removeFromFavorites, getFavorites, getallFavorites } = require("../controllers/favoritesController");
+const { addToFavorites, removeCoinFromFavorites, getFavorites, getallFavorites } = require("../controllers/favoritesController");
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/add", protect, addToFavorites);
 
 // Route to remove a favorite
-router.delete('/remove', protect, removeFromFavorites);
+router.delete('/remove', protect, removeCoinFromFavorites);
 
 // Route to get FavoriteCoins
 router.get('/', protect, getFavorites);
