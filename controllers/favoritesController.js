@@ -1,11 +1,11 @@
 const FavoriteCoin = require('../models/FavoriteCoin'); // Import the FavoriteCoin model
-const CoinHistory = require('../models/CoinHistory'); // Import the CoinHistory model
+// const CoinHistory = require('../models/CoinHistory'); // Import the CoinHistory model
 const User = require('../models/User');
 
 // Function to get all favorite coins along with their history
 exports.getallFavorites = async (req, res) => {
   const userId = req.user.id; // Get the user ID from the authenticated user
-
+  console.log(userId);
   try {
     // Find the user by ID and populate the favoriteCoins array
     const user = await User.findById(userId).populate({
@@ -14,7 +14,7 @@ exports.getallFavorites = async (req, res) => {
         path: 'coinHistoryId', // Populate the coinHistoryId field inside each favoriteCoin
       }
     });
-
+    console.log("User data with favorite coin", user);
     if (!user || !user.favoriteCoins.length) {
       return res.status(404).json({ message: "No favorite coins found for this user" });
     }
