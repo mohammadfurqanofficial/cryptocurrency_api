@@ -1,5 +1,5 @@
 const axios = require('axios');
-const FavoriteCoin = require('../models/FavoriteCoin');
+const FavoriteCoin = require('../models/Coins');
 const CoinHistory = require('../models/CoinHistory');
 const User = require('../models/User');
 

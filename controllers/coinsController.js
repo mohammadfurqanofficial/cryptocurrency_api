@@ -1,4 +1,4 @@
-const FavoriteCoin = require('../models/FavoriteCoin'); // Import the FavoriteCoin model
+const FavoriteCoin = require('../models/Coins'); // Import the FavoriteCoin model
 // const CoinHistory = require('../models/CoinHistory'); // Import the CoinHistory model
 const User = require('../models/User');
 
@@ -62,34 +62,54 @@ exports.addToFavorites = async (req, res) => {
   const { coinId, name, symbol, rank } = req.body; // Extract all required fields from the request body
 
   try {
-    // Check if the favorite coin already exists for the user
-    const existingFavorite = await FavoriteCoin.findOne({ userId, coinId });
+    // Check if the coin already exists in the FavoriteCoin schema
+    let favoriteCoin = await FavoriteCoin.findOne({ coinId });
 
-    if (existingFavorite) {
-      return res.status(400).json({ message: "Coin already in favorites" });
+    if (favoriteCoin) {
+      // Coin already exists, now check if it's already added to user's favorites
+      const existingInUser = await User.findOne({
+        _id: userId,
+        favoriteCoins: favoriteCoin._id
+      });
+
+      if (existingInUser) {
+        return res.status(400).json({ message: "Coin already in your favorites" });
+      }
+
+      // Coin exists in the FavoriteCoin schema, but not in user's favorites, so add it
+      await User.findByIdAndUpdate(
+        userId,
+        { $push: { favoriteCoins: favoriteCoin._id } }, // Add the existing favoriteCoin ID to user's favorites
+        { new: true, useFindAndModify: false } // Ensure we get the updated user document
+      );
+
+      return res.status(200).json({
+        message: "Coin added to your favorites",
+        favoriteCoin,
+      });
     }
 
-    // Create a new favorite coin document
-    const favoriteCoin = new FavoriteCoin({
+    // Coin does not exist in FavoriteCoin schema, so create a new favorite coin document
+    favoriteCoin = new FavoriteCoin({
       coinId,
       name,
       symbol,
       rank,
     });
 
-    // Save the favorite coin
+    // Save the new favorite coin document
     await favoriteCoin.save();
 
-    // After saving the favorite coin, update the User model with the favoriteCoin._id
+    // After saving the new favorite coin, update the User model with the new favoriteCoin._id
     await User.findByIdAndUpdate(
       userId,
-      { $push: { favoriteCoins: favoriteCoin._id } }, // Add the favorite coin ID to the user's favoriteCoins array
+      { $push: { favoriteCoins: favoriteCoin._id } }, // Add the newly created favoriteCoin ID to user's favorites
       { new: true, useFindAndModify: false } // Ensure we get the updated user document
     );
 
     // Respond with the newly added favorite coin
     res.status(201).json({
-      message: "Coin added to favorites",
+      message: "New coin added to favorites",
       favoriteCoin,
     });
   } catch (error) {
@@ -97,6 +117,7 @@ exports.addToFavorites = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Function to remove a coin from favorites
 exports.removeCoinFromFavorites = async (req, res) => {
