@@ -25,45 +25,54 @@ exports.getAllCoinHistory = async (req, res) => {
 };
 
 // Function to get all coin history for a specific coin
+// Function to get coin history for a specific coin or all favorite coins
 exports.getCoinHistory = async (req, res) => {
   const userId = req.user ? req.user.id : null;
-  const { coinId } = req.params; // Get the coin ID from the request parameters
+  const { coinId } = req.params; // Get the coin ID from the request parameters (optional)
 
   try {
-      // Find the user by ID and populate the favoriteCoins array
-      const user = await User.findById(userId).populate({
-        path: 'favoriteCoins',
-        match: { coinId }, // Filter to match specific coinId
-        populate: {
-          path: 'coinHistoryId', // Populate the coin history for the favorite coin
-        },
-      });
-      // console.log(user);
-      const favorites = user.favoriteCoins;
-      console.log('Favorite data', favorites);
-      
-      const singlecoinId = favorites.map(fav => fav.coinId).join(',');
-      console.log('All Favorite coin ID', singlecoinId);
+    // Find the user and populate the favoriteCoins array, optionally filtering by coinId if provided
+    const user = await User.findById(userId).populate({
+      path: 'favoriteCoins',
+      match: coinId ? { coinId } : {}, // Match specific coinId if provided, otherwise fetch all favorites
+      populate: {
+        path: 'coinHistoryId', // Populate the coin history for each favorite coin
+      },
+    });
 
-      // // Find all coin history records based on the coin ID
-      // const coinHistory = await CoinHistory.find({ singlecoinId });
-      // console.log('Get all coin history', coinHistory);
+    // Check if the user has any favorite coins
+    if (!user || !user.favoriteCoins.length) {
+      return res.status(404).json({ message: "No favorite coins found for this user" });
+    }
 
-      // if (!coinHistory.length) {
-      //     return res.status(404).json({ message: "No coin history found for this coin" });
-      // }
+    // Retrieve all coin history for the favorite coins
+    const favorites = user.favoriteCoins;
+    console.log('Favorite data', favorites);
 
-      // Respond with the found coin history
-      res.status(200).json({
-          message: "Coin history retrieved successfully",
-          favorites,
-          // coinHistory,
-      });
+    // Extract all coin IDs from the favorite coins
+    const favoriteCoinIds = favorites.map(fav => fav.coinId);
+    console.log('All Favorite Coin IDs:', favoriteCoinIds);
+
+    // Find all coin history records based on the coin IDs
+    const coinHistory = await CoinHistory.find({ coinId: { $in: favoriteCoinIds } });
+    console.log('Coin History Data:', coinHistory);
+
+    if (!coinHistory.length) {
+      return res.status(404).json({ message: "No coin history found for the favorite coins" });
+    }
+
+    // Respond with the found coin history and favorite coins
+    res.status(200).json({
+      message: "Coin history retrieved successfully",
+      favorites, // Return the favorite coins and their details
+      coinHistory, // Return the history for all favorite coins
+    });
   } catch (error) {
-      console.error("Error retrieving coin history:", error); // Log the error for debugging
-      res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error retrieving coin history:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 
 // Function to save coin history from favorite coins
