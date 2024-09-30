@@ -44,25 +44,33 @@ exports.getCoinHistory = async (req, res) => {
 
     // Retrieve all coin history for the favorite coins
     const favorites = user.favoriteCoins;
-    console.log('Favorite data', favorites);
+    // console.log('Favorite data', favorites);
 
     // Extract all coin IDs from the favorite coins
     const favoriteCoinIds = favorites.map(fav => fav.coinId);
-    console.log('All Favorite Coin IDs:', favoriteCoinIds);
+    // console.log('All Favorite Coin IDs:', favoriteCoinIds);
 
     // Find all coin history records based on the coin IDs
     const coinHistory = await CoinHistory.find({ coinId: { $in: favoriteCoinIds } });
-    console.log('Coin History Data:', coinHistory);
+    // console.log('Coin History Data:', coinHistory);
 
     if (!coinHistory.length) {
       return res.status(404).json({ message: "No coin history found for the favorite coins" });
     }
 
+    // Map over the favorites and attach the corresponding history
+    const coinsWithHistory = favorites.map(fav => {
+      const historyForCoin = coinHistory.filter(history => history.coinId === parseInt(fav.coinId)); // Match history by coinId
+      return {
+        ...fav._doc, // Spread the favorite coin's properties
+        coinHistory: historyForCoin, // Add the matching history for this coin
+      };
+    });
+
     // Respond with the found coin history and favorite coins
     res.status(200).json({
       message: "Coin history retrieved successfully",
-      coin: favorites, // Return the favorite coins and their details
-      history: coinHistory, // Return the history for all favorite coins
+      coin: coinsWithHistory, // Return the favorite coins with their corresponding history
     });
   } catch (error) {
     console.error("Error retrieving coin history:", error); // Log the error for debugging
