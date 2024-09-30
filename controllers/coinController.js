@@ -7,7 +7,7 @@ const User = require('../models/User');
 exports.getAllCoinHistory = async (req, res) => {
   try {
       // Retrieve all coin history entries
-      const coinHistories = await CoinHistory.find();
+      const coinHistories = await CoinHistory.find({ coinId });
 
       if (!coinHistories.length) {
           return res.status(404).json({ message: "No coin history found" });
