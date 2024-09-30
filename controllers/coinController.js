@@ -95,7 +95,7 @@ exports.saveCoinHistory = async (req, res) => {
       path: 'favoriteCoins', // Populate favoriteCoins field
     });
     
-    console.log("User data with favorite coin", user);
+    // console.log("User data with favorite coin", user);
     if (!user || !user.favoriteCoins.length) {
       return res.status(404).json({ message: "No favorite coins found for this user" });
     }
