@@ -65,19 +65,16 @@ exports.saveCoinHistory = async (req, res) => {
     if (!user || !user.favoriteCoins.length) {
       return res.status(404).json({ message: "No favorite coins found for this user" });
     }
-
-    res.status(200).json({ message: "Get all favorites", favorites: user.favoriteCoins });
-
-    // Fetch all favorite coins for the user
-    // const favorites = await FavoriteCoin.find({ userId });
+    const favorites = user.favoriteCoins;
+    // res.status(200).json({ message: "Get all favorites", favorites: user.favoriteCoins });
 
     // if (!favorites.length) {
     //   return res.status(404).json({ message: "No favorite coins found for this user" });
     // }
 
     // Extract coin IDs from favorites
-    // const coinIds = favorites.map(fav => fav.coinId).join(',');
-
+    const coinIds = favorites.map(fav => fav.coinId).join(',');
+    res.status(200).json({ message: "Get all coin Ids", coinIds });
     // Fetch updates from CoinMarketCap API
     // const response = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`, {
     //   headers: {
@@ -91,12 +88,12 @@ exports.saveCoinHistory = async (req, res) => {
     //   return res.status(404).json({ message: "No coin data found" });
     // }
 
-    // Iterate over the coins and save only the quote data in CoinHistory
+    // // Iterate over the coins and save only the quote data in CoinHistory
     // for (const id of Object.keys(coins)) {
     //   const coin = coins[id];
     //   const coinQuote = coin.quote.USD;
 
-    //   // Create and save a new CoinHistory entry with only the quote details
+    // //   // Create and save a new CoinHistory entry with only the quote details
     //   const coinHistory = new CoinHistory({
     //     coinId: coin.id,
     //     price: coinQuote.price,
@@ -122,7 +119,7 @@ exports.saveCoinHistory = async (req, res) => {
     //   );
     // }
 
-    // res.status(200).json({ message: "Coin quotes saved successfully", user });
+    res.status(200).json({ message: "Coin quotes saved successfully", user });
   } catch (error) {
     console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
     res.status(500).json({ message: "Server error", error: error.message });
