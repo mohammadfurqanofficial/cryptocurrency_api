@@ -118,7 +118,7 @@ exports.saveCoinHistory = async (req, res) => {
       );
     }
 
-    res.status(200).json({ message: "Coin quotes saved successfully", coinHistoryId });
+    res.status(200).json({ message: "Coin quotes saved successfully"});
   } catch (error) {
     console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
     res.status(500).json({ message: "Server error", error: error.message });
