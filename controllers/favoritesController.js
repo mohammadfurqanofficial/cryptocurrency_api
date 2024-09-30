@@ -101,9 +101,18 @@ exports.addToFavorites = async (req, res) => {
 // Function to remove a coin from favorites
 exports.removeCoinFromFavorites = async (req, res) => {
   const userId = req.user.id; // Get the user ID from the authenticated user
-  const { coinObjectId } = req.body; // Extract the coinObjectId from the request body
+  const { coinId } = req.body; // Extract the coinId from the request body
 
   try {
+    // Find the coin object ID using the coin ID
+    const favoriteCoin = await FavoriteCoin.findOne({ coinId });
+    
+    if (!favoriteCoin) {
+      return res.status(404).json({ message: "Coin not found" });
+    }
+
+    const coinObjectId = favoriteCoin._id; // Get the objectId of the coin
+
     // Find the user and remove the coinObjectId from favoriteCoins array
     const result = await User.findByIdAndUpdate(
       userId, // Find the user by their ID
