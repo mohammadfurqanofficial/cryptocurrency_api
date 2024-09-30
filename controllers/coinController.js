@@ -35,9 +35,6 @@ exports.getCoinHistory = async (req, res) => {
     const user = await User.findById(userId).populate({
       path: 'favoriteCoins',
       match: coinId ? { coinId } : {}, // Match specific coinId if provided, otherwise fetch all favorites
-      populate: {
-        path: 'coinHistoryId', // Populate the coin history for each favorite coin
-      },
     });
 
     // Check if the user has any favorite coins
