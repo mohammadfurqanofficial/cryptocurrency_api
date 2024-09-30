@@ -7,22 +7,26 @@ exports.getallFavorites = async (req, res) => {
   const userId = req.user.id; // Get the user ID from the authenticated user
 
   try {
-      // Find all favorite coins for the user and populate the CoinHistory
-      const favorites = await FavoriteCoin.find({ userId })
-          .populate('coinHistoryId'); // Ensure 'coinHistoryId' is correctly set in schema
-
-      if (!favorites.length) { // Check if there are no favorites
-          return res.status(404).json({ message: "No favorite coins found for this user" });
+    // Find the user by ID and populate the favoriteCoins array
+    const user = await User.findById(userId).populate({
+      path: 'favoriteCoins', // Populate favoriteCoins field
+      populate: {
+        path: 'coinHistoryId', // Populate the coinHistoryId field inside each favoriteCoin
       }
+    });
 
-      // Respond with the user's favorite coins including their history
-      res.status(200).json({
-          message: "Favorite coins retrieved successfully",
-          favorites,
-      });
+    if (!user || !user.favoriteCoins.length) {
+      return res.status(404).json({ message: "No favorite coins found for this user" });
+    }
+
+    // Respond with the user's favorite coins including their history
+    res.status(200).json({
+      message: "Favorite coins retrieved successfully",
+      favorites: user.favoriteCoins,
+    });
   } catch (error) {
-      console.error("Error retrieving favorites:", error); // Log the error for debugging
-      res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error retrieving favorites:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
