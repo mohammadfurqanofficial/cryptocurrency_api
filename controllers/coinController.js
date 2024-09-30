@@ -40,8 +40,11 @@ exports.getCoinHistory = async (req, res) => {
       });
       // console.log(user);
       const favorites = user.favoriteCoins;
-      // console.log(user);
+      console.log('All Favorite data', favorites);
+      
       const singlecoinId = favorites.map(fav => fav.coinId).join(',');
+      console.log('All Favorite coin ID', singlecoinId);
+
       // Find all coin history records based on the coin ID
       const coinHistory = await CoinHistory.find({ singlecoinId });
 
