@@ -38,10 +38,12 @@ exports.getCoinHistory = async (req, res) => {
           path: 'coinHistoryId', // Populate the coin history for the favorite coin
         },
       });
-      console.log(user);
-
+      // console.log(user);
+      const favorites = user.favoriteCoins;
+      // console.log(user);
+      const singlecoinId = favorites.map(fav => fav.coinId).join(',');
       // Find all coin history records based on the coin ID
-      const coinHistory = await CoinHistory.find({ coinId });
+      const coinHistory = await CoinHistory.find({ singlecoinId });
 
       if (!coinHistory.length) {
           return res.status(404).json({ message: "No coin history found for this coin" });
@@ -50,6 +52,7 @@ exports.getCoinHistory = async (req, res) => {
       // Respond with the found coin history
       res.status(200).json({
           message: "Coin history retrieved successfully",
+          favorites,
           coinHistory,
       });
   } catch (error) {
