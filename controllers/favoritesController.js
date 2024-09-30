@@ -99,24 +99,30 @@ exports.addToFavorites = async (req, res) => {
 };
 
 // Function to remove a coin from favorites
-exports.removeFromFavorites = async (req, res) => {
-    const userId = req.user.id; // Get the user ID from the authenticated user
-    const { coinId } = req.body; // Extract the coinId from the request body
-  
-    try {
-      // Find and remove the favorite coin from the database
-      const result = await FavoriteCoin.findOneAndDelete({ userId, coinId });
-  
-      if (!result) {
-        return res.status(404).json({ message: "Coin not found in favorites" });
-      }
-  
-      // Respond with a success message
-      res.status(200).json({
-        message: "Coin removed from favorites",
-      });
-    } catch (error) {
-      console.error("Error removing from favorites:", error); // Log the error for debugging
-      res.status(500).json({ message: "Server error", error: error.message });
+exports.removeCoinFromFavorites = async (req, res) => {
+  const userId = req.user.id; // Get the user ID from the authenticated user
+  const { coinObjectId } = req.body; // Extract the coinObjectId from the request body
+
+  try {
+    // Find the user and remove the coinObjectId from favoriteCoins array
+    const result = await User.findByIdAndUpdate(
+      userId, // Find the user by their ID
+      { $pull: { favoriteCoins: coinObjectId } }, // Remove the coin ObjectId from the favoriteCoins array
+      { new: true } // Return the updated document
+    );
+
+    // Check if the user was found and updated
+    if (!result) {
+      return res.status(404).json({ message: "User not found or coin not in favorites" });
     }
+
+    // Respond with a success message and updated user data
+    res.status(200).json({
+      message: "Coin removed from favorites",
+      favoriteCoins: result.favoriteCoins // Send back the updated favoriteCoins array
+    });
+  } catch (error) {
+    console.error("Error removing coin from favorites:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
