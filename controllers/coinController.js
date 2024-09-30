@@ -61,8 +61,8 @@ exports.getCoinHistory = async (req, res) => {
     // Respond with the found coin history and favorite coins
     res.status(200).json({
       message: "Coin history retrieved successfully",
-      favorites, // Return the favorite coins and their details
-      coinHistory, // Return the history for all favorite coins
+      coin: favorites, // Return the favorite coins and their details
+      history: coinHistory, // Return the history for all favorite coins
     });
   } catch (error) {
     console.error("Error retrieving coin history:", error); // Log the error for debugging
