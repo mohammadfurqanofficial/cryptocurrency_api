@@ -24,7 +24,6 @@ exports.getAllCoinHistory = async (req, res) => {
   }
 };
 
-// Function to get all coin history for a specific coin
 // Function to get coin history for a specific coin or all favorite coins
 exports.getCoinHistory = async (req, res) => {
   const userId = req.user ? req.user.id : null;
@@ -89,6 +88,8 @@ exports.saveCoinHistory = async (req, res) => {
   }
 
   try {
+    const fav = await FavoriteCoin.find();
+    console.log(fav);
     // Find the user by ID and populate the favoriteCoins array
     const user = await User.findById(userId).populate({
       path: 'favoriteCoins', // Populate favoriteCoins field
