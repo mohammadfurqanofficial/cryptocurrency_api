@@ -40,24 +40,24 @@ exports.getCoinHistory = async (req, res) => {
       });
       // console.log(user);
       const favorites = user.favoriteCoins;
-      console.log('All Favorite data', favorites);
+      console.log('Favorite data', favorites);
       
       const singlecoinId = favorites.map(fav => fav.coinId).join(',');
       console.log('All Favorite coin ID', singlecoinId);
 
-      // Find all coin history records based on the coin ID
-      const coinHistory = await CoinHistory.find({ singlecoinId });
-      console.log('Get all coin history', coinHistory);
+      // // Find all coin history records based on the coin ID
+      // const coinHistory = await CoinHistory.find({ singlecoinId });
+      // console.log('Get all coin history', coinHistory);
 
-      if (!coinHistory.length) {
-          return res.status(404).json({ message: "No coin history found for this coin" });
-      }
+      // if (!coinHistory.length) {
+      //     return res.status(404).json({ message: "No coin history found for this coin" });
+      // }
 
       // Respond with the found coin history
       res.status(200).json({
           message: "Coin history retrieved successfully",
           favorites,
-          coinHistory,
+          // coinHistory,
       });
   } catch (error) {
       console.error("Error retrieving coin history:", error); // Log the error for debugging
