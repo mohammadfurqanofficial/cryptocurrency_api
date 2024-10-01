@@ -10,8 +10,8 @@ router.post("/add", protect, addToFavorites);
 // Route to remove a favorite
 router.delete('/remove', protect, removeCoinFromFavorites);
 
-// Route to get FavoriteCoins
-router.get('/', protect, getFavorites);
+// // Route to get FavoriteCoins
+// router.get('/', protect, getFavorites);
 
 // Route to get FavoriteCoins
 router.get('/all-favorites', protect, getallFavorites);
