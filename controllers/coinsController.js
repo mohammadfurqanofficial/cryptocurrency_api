@@ -127,13 +127,15 @@ exports.removeCoinFromFavorites = async (req, res) => {
   try {
     // Find the coin object ID using the coin ID
     const favoriteCoin = await FavoriteCoin.findOne({ coinId });
-    
+    console.log("Remove coin provided",favoriteCoin);
+
     if (!favoriteCoin) {
       return res.status(404).json({ message: "Coin not found" });
     }
 
     const coinObjectId = favoriteCoin._id; // Get the objectId of the coin
-
+    console.log("Coin Object ID", coinObjectId);
+    
     // Find the user and remove the coinObjectId from favoriteCoins array
     const result = await User.findByIdAndUpdate(
       userId, // Find the user by their ID
