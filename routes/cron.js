@@ -15,6 +15,11 @@ export async function GET(req) {
       },
     });
 
+    if (response.ok) {
+        console.log('Save history successful');
+        return NextResponse.json({ message: 'Success' });
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Error saving coin history:', errorData);
