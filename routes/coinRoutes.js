@@ -11,7 +11,7 @@ router.post('/save-history', protect, saveCoinHistory);
 router.get('/coin-history/:coinId', protect, getCoinHistory);
 
 // Route to get coin history download by coin ID
-router.get('/coin-history-download/:coinId', protect, getCoinHistoryDownload);
+router.get('/coin-history/download/:coinId', protect, getCoinHistoryDownload);
 
 // Route to get coin history by coin ID
 router.get('/all-coins-history', protect, getAllCoinHistory);
