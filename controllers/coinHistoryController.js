@@ -2,6 +2,10 @@ const axios = require('axios');
 const FavoriteCoin = require('../models/Coins');
 const CoinHistory = require('../models/CoinHistory');
 const User = require('../models/User');
+const { Parser } = require('json2csv'); // For converting JSON to CSV
+const fs = require('fs');
+const path = require('path');
+
 
 // Function to get all coin history
 exports.getAllCoinHistory = async (req, res) => {
@@ -24,7 +28,7 @@ exports.getAllCoinHistory = async (req, res) => {
   }
 };
 
-// Download CSV
+// Function to download specific coin history by date
 exports.getCoinHistoryDownload = async (req, res) => {
   try {
     const { coinId } = req.params;
@@ -64,34 +68,16 @@ exports.getCoinHistoryDownload = async (req, res) => {
     const json2csvParser = new Parser({ fields });
     const csv = json2csvParser.parse(coinHistory);
 
-    // Set the filename and file path
-    const filename = `coin_${coinId}_history_${date}.csv`;
-    const filePath = path.join(__dirname, `../downloads/${filename}`);
-
-    // Write the CSV to a file
-    fs.writeFileSync(filePath, csv);
-
-    // Set headers to trigger the download in the browser
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    // Send CSV as response without saving it on disk
+    res.setHeader('Content-Disposition', `attachment; filename=coin_${coinId}_history_${date}.csv`);
     res.setHeader('Content-Type', 'text/csv');
+    res.status(200).end(csv); // Directly send CSV content
 
-    // Send the CSV file as a response
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error('Error sending file:', err);
-        res.status(500).json({ message: 'Error sending file' });
-      } else {
-        // Optional: Delete the file after it's sent to avoid storing it on the server
-        fs.unlinkSync(filePath);
-      }
-    });
   } catch (error) {
     console.error('Error fetching coin history:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}
-
-
+};
 
 // Function to get coin history for a specific coin or all favorite coins
 exports.getCoinHistory = async (req, res) => {
