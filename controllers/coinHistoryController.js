@@ -52,26 +52,26 @@ exports.getCoinHistoryDownload = async (req, res) => {
       },
     });
 
-    if (!coinHistory || coinHistory.length === 0) {
-      return res.status(404).json({ message: 'No data found for the specified date' });
-    }
+    // if (!coinHistory || coinHistory.length === 0) {
+    //   return res.status(404).json({ message: 'No data found for the specified date' });
+    // }
 
-    // Define the fields for the CSV
-    const fields = [
-      'coinId', 'price', 'volume_24h', 'percent_change_1h',
-      'percent_change_24h', 'percent_change_7d', 'percent_change_30d',
-      'percent_change_60d', 'percent_change_90d', 'market_cap',
-      'fully_diluted_market_cap', 'createdAt'
-    ];
+    // // Define the fields for the CSV
+    // const fields = [
+    //   'coinId', 'price', 'volume_24h', 'percent_change_1h',
+    //   'percent_change_24h', 'percent_change_7d', 'percent_change_30d',
+    //   'percent_change_60d', 'percent_change_90d', 'market_cap',
+    //   'fully_diluted_market_cap', 'createdAt'
+    // ];
 
-    // Convert JSON data to CSV
-    const json2csvParser = new Parser({ fields });
-    const csv = json2csvParser.parse(coinHistory);
+    // // Convert JSON data to CSV
+    // const json2csvParser = new Parser({ fields });
+    // const csv = json2csvParser.parse(coinHistory);
 
-    // Send CSV as response without saving it on disk
-    res.setHeader('Content-Disposition', `attachment; filename=coin_${coinId}_history_${date}.csv`);
-    res.setHeader('Content-Type', 'text/csv');
-    res.status(200).end(csv); // Directly send CSV content
+    // // Send CSV as response without saving it on disk
+    // res.setHeader('Content-Disposition', `attachment; filename=coin_${coinId}_history_${date}.csv`);
+    // res.setHeader('Content-Type', 'text/csv');
+    res.status(200).end(coinHistory); // Directly send CSV content
 
   } catch (error) {
     console.error('Error fetching coin history:', error);
