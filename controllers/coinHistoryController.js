@@ -24,6 +24,75 @@ exports.getAllCoinHistory = async (req, res) => {
   }
 };
 
+// Download CSV
+exports.getCoinHistoryDownload = async (req, res) => {
+  try {
+    const { coinId } = req.params;
+    const { date } = req.query; // Expecting the date in the query string
+
+    // Validate the date
+    if (!date) {
+      return res.status(400).json({ message: 'Date is required' });
+    }
+
+    const targetDate = new Date(date);
+    const nextDay = new Date(targetDate);
+    nextDay.setDate(targetDate.getDate() + 1);
+
+    // Query the database for historical data of the coin on the specified date
+    const coinHistory = await CoinHistory.find({
+      coinId: coinId,
+      createdAt: {
+        $gte: targetDate, // Start of the day
+        $lt: nextDay,     // End of the day
+      },
+    });
+
+    if (!coinHistory || coinHistory.length === 0) {
+      return res.status(404).json({ message: 'No data found for the specified date' });
+    }
+
+    // Define the fields for the CSV
+    const fields = [
+      'coinId', 'price', 'volume_24h', 'percent_change_1h',
+      'percent_change_24h', 'percent_change_7d', 'percent_change_30d',
+      'percent_change_60d', 'percent_change_90d', 'market_cap',
+      'fully_diluted_market_cap', 'createdAt'
+    ];
+
+    // Convert JSON data to CSV
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(coinHistory);
+
+    // Set the filename and file path
+    const filename = `coin_${coinId}_history_${date}.csv`;
+    const filePath = path.join(__dirname, `../downloads/${filename}`);
+
+    // Write the CSV to a file
+    fs.writeFileSync(filePath, csv);
+
+    // Set headers to trigger the download in the browser
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    res.setHeader('Content-Type', 'text/csv');
+
+    // Send the CSV file as a response
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        res.status(500).json({ message: 'Error sending file' });
+      } else {
+        // Optional: Delete the file after it's sent to avoid storing it on the server
+        fs.unlinkSync(filePath);
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching coin history:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
+
 // Function to get coin history for a specific coin or all favorite coins
 exports.getCoinHistory = async (req, res) => {
   const userId = req.user ? req.user.id : null;
@@ -76,8 +145,6 @@ exports.getCoinHistory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
-
 
 // Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
