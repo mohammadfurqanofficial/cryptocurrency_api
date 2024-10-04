@@ -32,7 +32,7 @@ exports.getAllCoinHistory = async (req, res) => {
 exports.getCoinHistoryDownload = async (req, res) => {
   try {
     const { coinId } = req.params;
-    const { date } = req.query;
+    const { date } = req.query; // Expecting the date in the query string
 
     // Validate the date
     if (!date) {
@@ -47,8 +47,8 @@ exports.getCoinHistoryDownload = async (req, res) => {
     const coinHistory = await CoinHistory.find({
       coinId: coinId,
       createdAt: {
-        $gte: targetDate,
-        $lt: nextDay,
+        $gte: targetDate, // Start of the day
+        $lt: nextDay,     // End of the day
       },
     });
 
@@ -68,23 +68,11 @@ exports.getCoinHistoryDownload = async (req, res) => {
     const json2csvParser = new Parser({ fields });
     const csv = json2csvParser.parse(coinHistory);
 
-    // Define a file path for the CSV
-    const fileName = `coin_${coinId}_history_${date}.csv`;
-    const downloadsDir = path.join(__dirname, '..', 'downloads'); // Ensure this path is correct
-    const filePath = path.join(downloadsDir, fileName);
+    // Send CSV as response without saving it on disk
+    res.setHeader('Content-Disposition', `attachment; filename=coin_${coinId}_history_${date}.csv`);
+    res.setHeader('Content-Type', 'text/csv');
+    res.status(200).end(csv); // Directly send CSV content
 
-    // Create downloads directory if it doesn't exist
-    if (!fs.existsSync(downloadsDir)) {
-      fs.mkdirSync(downloadsDir, { recursive: true }); // Create directory recursively if necessary
-    }
-
-    // Save CSV to a file
-    fs.writeFileSync(filePath, csv);
-    console.log(req.protocol);
-    // Send the file path as a download link
-    const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${fileName}`;
-
-    res.status(200).json({ message: 'CSV file generated', downloadUrl });
   } catch (error) {
     console.error('Error fetching coin history:', error);
     res.status(500).json({ message: 'Internal server error' });
