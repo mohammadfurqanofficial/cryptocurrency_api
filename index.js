@@ -7,8 +7,8 @@ const favoritesRoutes = require('./routes/favoritesRoutes'); // New favorite rou
 const coinRoutes = require('./routes/coinRoutes'); // New favorite route
 const cors = require('cors');
 
-const alertRoutes = require("./routes/alertRoutes");
-app.use("/api/alerts", alertRoutes); // Add the alerts route
+// const alertRoutes = require("./routes/alertRoutes");
+// app.use("/api/alerts", alertRoutes); // Add the alerts route
 
 // Load environment variables
 dotenv.config();
