@@ -67,7 +67,7 @@ exports.getCoinHistoryDownload = async (req, res) => {
     // Convert JSON data to CSV
     const json2csvParser = new Parser({ fields });
     const csv = json2csvParser.parse(coinHistory);
-
+    console.log("Coin History", coinHistory);
     // Define a file path for the CSV
     const fileName = `coin_${coinId}_history_${date}.csv`;
     const filePath = path.join(__dirname, '..', 'downloads', fileName); // Make sure the 'downloads' directory exists
@@ -77,7 +77,7 @@ exports.getCoinHistoryDownload = async (req, res) => {
 
     // Send the file path as a download link
     const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${fileName}`;
-
+    console.log("Download URL: ", downloadUrl);
     res.status(200).json({ message: 'CSV file generated', downloadUrl });
   } catch (error) {
     console.error('Error fetching coin history:', error);
