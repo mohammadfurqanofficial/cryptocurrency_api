@@ -68,11 +68,17 @@ exports.getCoinHistoryDownload = async (req, res) => {
     const json2csvParser = new Parser({ fields });
     const csv = json2csvParser.parse(coinHistory);
 
-    // Send CSV as response without saving it on disk
-    res.setHeader('Content-Disposition', `attachment; filename=coin_${coinId}_history_${date}.csv`);
-    res.setHeader('Content-Type', 'text/csv');
-    res.status(200).end(csv); // Directly send CSV content
+    // Define a file path for the CSV
+    const fileName = `coin_${coinId}_history_${date}.csv`;
+    const filePath = path.join(__dirname, '..', 'downloads', fileName); // Make sure the 'downloads' directory exists
 
+    // Save CSV to a file
+    fs.writeFileSync(filePath, csv);
+
+    // Send the file path as a download link
+    const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${fileName}`;
+
+    res.status(200).json({ message: 'CSV file generated', downloadUrl });
   } catch (error) {
     console.error('Error fetching coin history:', error);
     res.status(500).json({ message: 'Internal server error' });
