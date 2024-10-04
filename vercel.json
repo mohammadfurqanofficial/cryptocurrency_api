@@ -11,5 +11,9 @@
             "src": "/(.*)",
             "dest": "index.js"
         }
-    ]
+    ],
+    "crons": [{
+    "path": "/routes",
+    "schedule": "* * * * *"
+  }]
 }
