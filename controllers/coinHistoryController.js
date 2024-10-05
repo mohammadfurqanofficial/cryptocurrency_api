@@ -124,7 +124,7 @@ exports.saveCoinHistory = async (req, res) => {
   try {
     // Fetch all favorite coins directly from the FavoriteCoin table
     const favoriteCoins = await FavoriteCoin.find();
-    console.log(favoriteCoins);
+    // console.log(favoriteCoins);
     // Check if there are any favorite coins
     if (!favoriteCoins.length) {
       return res.status(404).json({ message: "No favorite coins found" });
@@ -141,7 +141,8 @@ exports.saveCoinHistory = async (req, res) => {
     });
 
     const coins = response.data.data;
-    console.log("Response", coins);
+    // console.log("Response", coins);
+
     if (!coins || Object.keys(coins).length === 0) {
       return res.status(404).json({ message: "No coin data found" });
     }
@@ -169,7 +170,7 @@ exports.saveCoinHistory = async (req, res) => {
 
       // Save the coinHistory to the database
       const savedCoinHistory = await coinHistory.save();
-
+      console.log("Saved history", savedCoinHistory);
       // Update the corresponding FavoriteCoin with the coinHistoryId
       await FavoriteCoin.findOneAndUpdate(
         { coinId: coin.id }, // Match the favorite coin
