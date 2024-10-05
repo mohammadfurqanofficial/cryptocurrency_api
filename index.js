@@ -1,12 +1,14 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const cronRoutes = require('./routes/cron'); // Add this line
 const authRoutes = require('./routes/authRoutes');
-const cryptoRoutes = require("./routes/cryptoRoutes");
-const favoritesRoutes = require('./routes/favoritesRoutes');
-const coinRoutes = require('./routes/coinRoutes');
-const cors = require('cors');;
+const cryptoRoutes = require("./routes/cryptoRoutes"); // Import the new crypto routes
+const favoritesRoutes = require('./routes/favoritesRoutes'); // New favorite route
+const coinRoutes = require('./routes/coinRoutes'); // New favorite route
+// Import the saveCoinHistory function if it's defined in another file
+const { saveCoinHistory } = require('./controllers/coinHistoryController');
+
+const cors = require('cors');
 
 // const alertRoutes = require("./routes/alertRoutes");
 // app.use("/api/alerts", alertRoutes); // Add the alerts route
@@ -28,7 +30,6 @@ app.use('/api/auth', authRoutes); // Authentication routes
 app.use("/api", cryptoRoutes); // Add the cryptocurrency routes here
 app.use("/api/favorites", favoritesRoutes); // Add this line
 app.use("/api/coins", coinRoutes); // Add this line
-app.use('/api/cron', cronRoutes); // Add this line
 
 // Default Route
 app.get('/', (req, res) => {
