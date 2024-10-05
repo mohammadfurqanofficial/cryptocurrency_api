@@ -5,6 +5,9 @@ const authRoutes = require('./routes/authRoutes');
 const cryptoRoutes = require("./routes/cryptoRoutes"); // Import the new crypto routes
 const favoritesRoutes = require('./routes/favoritesRoutes'); // New favorite route
 const coinRoutes = require('./routes/coinRoutes'); // New favorite route
+// Import the saveCoinHistory function if it's defined in another file
+const { saveCoinHistory } = require('./controllers/coinHistoryController');
+
 const cors = require('cors');
 
 // const alertRoutes = require("./routes/alertRoutes");
@@ -33,11 +36,18 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-setInterval(() => {
-  saveCoinHistory();
-  console.log("History Saved");
-}, 60000);
+// setInterval(() => {
+//   saveCoinHistory(); // Call the saveCoinHistory function every minute
+//   console.log("Called saveCoinHistory at:", new Date().toISOString());
+// }, 60000); // 60000 ms = 1 minute
 
 // Listen to port from .env or default to 5000
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+
+  setInterval(() => {
+    saveCoinHistory(); // Call the saveCoinHistory function every minute
+    console.log("Called saveCoinHistory at:", new Date().toISOString());
+  }, 60000); // 60000 ms = 1 minute
+});
