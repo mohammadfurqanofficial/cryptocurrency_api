@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 // @desc    Generate token for verification
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
 // @desc    Register user and send verification email
