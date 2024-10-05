@@ -121,33 +121,18 @@ exports.getCoinHistory = async (req, res) => {
 
 // Function to save coin history from favorite coins
 exports.saveCoinHistory = async (req, res) => {
-  const userId = req.user ? req.user.id : null;
-
-  if (!userId) {
-    return res.status(400).json({ message: "Invalid user" });
-  }
-
   try {
-    const fav = await FavoriteCoin.find();
-    console.log(fav);
-    // Find the user by ID and populate the favoriteCoins array
-    const user = await User.findById(userId).populate({
-      path: 'favoriteCoins', // Populate favoriteCoins field
-    });
-    
-    // console.log("User data with favorite coin", user);
-    if (!user || !user.favoriteCoins.length) {
-      return res.status(404).json({ message: "No favorite coins found for this user" });
-    }
-    const favorites = user.favoriteCoins;
-    
-    if (!favorites.length) {
-      return res.status(404).json({ message: "No favorite coins found for this user" });
+    // Fetch all favorite coins directly from the FavoriteCoin table
+    const favoriteCoins = await FavoriteCoin.find();
+
+    // Check if there are any favorite coins
+    if (!favoriteCoins.length) {
+      return res.status(404).json({ message: "No favorite coins found" });
     }
 
-    // Extract coin IDs from favorites
-    const coinIds = favorites.map(fav => fav.coinId).join(',');
-    // res.status(200).json({ message: "Get all coin Ids", coinIds });
+    // Extract the coin IDs from favoriteCoins
+    const coinIds = favoriteCoins.map(fav => fav.coinId).join(',');
+
     // Fetch updates from CoinMarketCap API
     const response = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`, {
       headers: {
@@ -161,12 +146,12 @@ exports.saveCoinHistory = async (req, res) => {
       return res.status(404).json({ message: "No coin data found" });
     }
 
-    // Iterate over the coins and save only the quote data in CoinHistory
+    // Iterate over the coins and save the quote data to CoinHistory
     for (const id of Object.keys(coins)) {
       const coin = coins[id];
       const coinQuote = coin.quote.USD;
 
-    //   // Create and save a new CoinHistory entry with only the quote details
+      // Create and save a new CoinHistory entry with only the quote details
       const coinHistory = new CoinHistory({
         coinId: coin.id,
         price: coinQuote.price,
@@ -183,7 +168,7 @@ exports.saveCoinHistory = async (req, res) => {
       });
 
       // Save the coinHistory to the database
-      const savedCoinHistory = await coinHistory.save(); 
+      const savedCoinHistory = await coinHistory.save();
 
       // Update the corresponding FavoriteCoin with the coinHistoryId
       await FavoriteCoin.findOneAndUpdate(
@@ -192,7 +177,7 @@ exports.saveCoinHistory = async (req, res) => {
       );
     }
 
-    res.status(200).json({ message: "Coin quotes saved successfully"});
+    res.status(200).json({ message: "Coin quotes saved successfully" });
   } catch (error) {
     console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
     res.status(500).json({ message: "Server error", error: error.message });
