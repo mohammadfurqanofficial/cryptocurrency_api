@@ -132,7 +132,7 @@ exports.saveCoinHistory = async (req, res) => {
 
     // Extract the coin IDs from favoriteCoins
     const coinIds = favoriteCoins.map(fav => fav.coinId).join(',');
-
+    console.log("All Coin ID",coinIds);
     // Fetch updates from CoinMarketCap API
     const response = await axios.get(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=${coinIds}`, {
       headers: {
