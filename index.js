@@ -33,12 +33,12 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// setInterval(() => {
-//   saveCoinHistory();
-//   checkAndSendAlerts();
+setInterval(() => {
+  saveCoinHistory();
+  checkAndSendAlerts();
 
-//   console.log("chamou");
-// }, 60000);
+  console.log("chamou");
+}, 60000);
 
 // Listen to port from .env or default to 5000
 const PORT = process.env.PORT || 5000;
