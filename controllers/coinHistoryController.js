@@ -170,15 +170,16 @@ exports.saveCoinHistory = async (req, res) => {
 
       // Save the coinHistory to the database
       const savedCoinHistory = await coinHistory.save();
-      console.log("Saved history", savedCoinHistory);
+      // console.log("Saved history", savedCoinHistory);
 
        // Update the corresponding FavoriteCoin with the coinHistoryId
-       const fav_coin = await FavoriteCoin.findOneAndUpdate(
+      const fav_coin = await FavoriteCoin.findOneAndUpdate(
         { coinId: coin.id }, // Match the favorite coin
-        { coinHistoryId: savedCoinHistory._id } // Update with the coinHistory ID
+        { coinHistoryId: savedCoinHistory._id }, // Update with the coinHistory ID
+        { new: true } // Return the updated document
       );
+      console.log("Favorite coin saving function", fav_coin);
     }
-    console.log(fav_coin);
     res.status(200).json({ message: "Coin quotes saved successfully"});
   } catch (error) {
     console.error("Error saving coin quotes:", error.response ? error.response.data : error.message);
