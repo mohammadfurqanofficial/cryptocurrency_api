@@ -141,7 +141,7 @@ exports.saveCoinHistory = async (req, res) => {
     });
 
     const coins = response.data.data;
-
+    console.log("Response", coins);
     if (!coins || Object.keys(coins).length === 0) {
       return res.status(404).json({ message: "No coin data found" });
     }
