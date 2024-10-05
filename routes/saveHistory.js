@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { saveCoinHistory } = require('../controllers/coinHistoryController');
 
 // Define your cron route
 router.get('/save-coin-history', (req, res) => {
