@@ -1,36 +1,23 @@
-import { NextResponse } from 'next/server';
+const express = require('express');
+const router = express.Router();
+const { saveCoinHistory } = require('../controllers/coinHistoryController');
 
-export async function GET(req) {
-    if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-  
-    console.log('Cron job triggered at:', new Date().toISOString());
-
-  // Call your API endpoint
-  try {
-    const response = await fetch(`${process.env.API_URL}/coins/save-history`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.CRON_SECRET}`
-      },
-    });
-
-    if (response.ok) {
-        console.log('Save history successful');
-        return NextResponse.json({ message: 'Success' });
-    }
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error saving coin history:', errorData);
-      return NextResponse.json({ error: 'Failed to save coin history' }, { status: 500 });
-    }
-
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error('Error fetching API:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+// Route for handling cron job to save coin history
+router.get('/cron', async (req, res) => {
+  // Authorization check
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
-}
+
+  try {
+    // Trigger the saveCoinHistory function to save coin data
+    await saveCoinHistory(req, res);
+    console.log('Cron job triggered and coin history saved successfully');
+    res.status(200).json({ message: 'Coin history saved successfully' });
+  } catch (error) {
+    console.error('Error saving coin history:', error);
+    res.status(500).json({ message: 'Failed to save coin history' });
+  }
+});
+
+module.exports = router;

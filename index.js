@@ -24,7 +24,7 @@ app.use(express.json()); // For parsing application/json
 app.use(cors()); // Enable CORS
 
 // Routes
-app.use('/api', cronRoutes); // Adjust the path as needed
+app.use('/api', cronRoutes);
 app.use('/api/auth', authRoutes); // Authentication routes
 app.use("/api", cryptoRoutes); // Add the cryptocurrency routes here
 app.use("/api/favorites", favoritesRoutes); // Add this line
