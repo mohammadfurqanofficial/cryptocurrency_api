@@ -124,7 +124,7 @@ exports.saveCoinHistory = async (req, res) => {
   try {
     // Fetch all favorite coins directly from the FavoriteCoin table
     const favoriteCoins = await FavoriteCoin.find();
-
+    console.log(favoriteCoins);
     // Check if there are any favorite coins
     if (!favoriteCoins.length) {
       return res.status(404).json({ message: "No favorite coins found" });
