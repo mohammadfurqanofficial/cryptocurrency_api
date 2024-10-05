@@ -35,9 +35,7 @@ app.get('/', (req, res) => {
 
 setInterval(() => {
   saveCoinHistory();
-  checkAndSendAlerts();
-
-  console.log("chamou");
+  console.log("History Saved");
 }, 60000);
 
 // Listen to port from .env or default to 5000
