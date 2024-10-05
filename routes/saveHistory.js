@@ -4,7 +4,7 @@ const { saveCoinHistory } = require('../controllers/coinHistoryController');
 
 // Define your cron route
 router.get('/save-coin-history', (req, res) => {
-  saveCoinHistory();
+  console.log(saveCoinHistory());
   console.log("This is cron API");
   res.status(200).json({ success: true });
 });
