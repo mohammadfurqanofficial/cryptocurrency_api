@@ -12,8 +12,10 @@
             "dest": "index.js"
         }
     ],
-    "crons": [{
-    "path": "/routes/cron",
-    "schedule": "* * * * *"
-  }]
+    "crons": [
+        {
+        "path": "api/routes/cron",
+        "schedule": "* * * * *"
+        }
+    ]
 }

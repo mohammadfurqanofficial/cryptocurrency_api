@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(req) {
-  // Check for authorization
-  if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+    if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+  
+    console.log('Cron job triggered at:', new Date().toISOString());
 
   // Call your API endpoint
   try {
@@ -12,6 +13,7 @@ export async function GET(req) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.CRON_SECRET}`
       },
     });
 
