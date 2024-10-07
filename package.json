@@ -24,6 +24,7 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "vercel": "^37.6.1"
   }
 }

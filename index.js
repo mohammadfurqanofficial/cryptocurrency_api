@@ -28,7 +28,7 @@ app.use('/api/auth', authRoutes); // Authentication routes
 app.use("/api", cryptoRoutes); // Add the cryptocurrency routes here
 app.use("/api/favorites", favoritesRoutes); // Add this line
 app.use("/api/coins", coinRoutes); // Add this line
-app.use("/api/cron", cronRoutes); // Add this line
+// app.use("/api/cron", cronRoutes); // Add this line
 
 // Default Route
 app.get('/', (req, res) => {
