@@ -32,11 +32,6 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// setInterval(() => {
-//   saveCoinHistory(); // Call the saveCoinHistory function every minute
-//   console.log("Called saveCoinHistory at:", new Date().toISOString());
-// }, 60000); // 60000 ms = 1 minute
-
 // Listen to port from .env or default to 5000
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
