@@ -5,7 +5,8 @@ const authRoutes = require('./routes/authRoutes');
 const cryptoRoutes = require("./routes/cryptoRoutes"); // Import the new crypto routes
 const favoritesRoutes = require('./routes/favoritesRoutes'); // New favorite route
 const coinRoutes = require('./routes/coinRoutes'); // New favorite route
-const cronRoutes = require('./routes/cron'); // New favorite route
+// const cronRoutes = require('./routes/cron'); // New favorite route
+import { cron } from './routes/cron.js';
 const cors = require('cors');
 
 // const alertRoutes = require("./routes/alertRoutes");
@@ -28,7 +29,7 @@ app.use('/api/auth', authRoutes); // Authentication routes
 app.use("/api", cryptoRoutes); // Add the cryptocurrency routes here
 app.use("/api/favorites", favoritesRoutes); // Add this line
 app.use("/api/coins", coinRoutes); // Add this line
-// app.use("/api/cron", cronRoutes); // Add this line
+app.use('api/cron', cron);
 
 // Default Route
 app.get('/', (req, res) => {
