@@ -14,7 +14,7 @@
     ],
     "crons": [
         {
-            "path": "https://cryptocurrency-api-red.vercel.app/api/coins/save-history",
+            "path": "cryptocurrency-api-red.vercel.app/api/coins/save-history",
             "schedule": "*/1 * * * *"
         }
     ]
