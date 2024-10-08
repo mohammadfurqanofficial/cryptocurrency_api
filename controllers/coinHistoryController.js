@@ -186,3 +186,16 @@ exports.saveCoinHistory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
+exports.saveHistoryCron = async (req, res) => {
+  try {
+    // Internally call the POST route to trigger the saveCoinHistory function
+    const response = await axios.post(`${process.env.API_URL}/api/coins/save-history`);
+    console.log(response);
+    res.status(200).json({ message: "Cron job triggered successfully", data: response.data });
+  } catch (error) {
+    console.error("Error triggering cron job:", error.message);
+    res.status(500).json({ message: "Error triggering cron job", error: error.message });
+  }
+};
