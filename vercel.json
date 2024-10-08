@@ -14,7 +14,7 @@
     ],
     "crons": [
         {
-            "path": "/api/coins/save-history",
+            "path": "/api/coins/save-history-cron",
             "schedule": "*/1 * * * *"
         }
     ]
