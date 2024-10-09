@@ -2,10 +2,6 @@ const axios = require('axios');
 const FavoriteCoin = require('../models/Coins');
 const CoinHistory = require('../models/CoinHistory');
 const User = require('../models/User');
-// const { Parser } = require('json2csv'); // For converting JSON to CSV
-// const fs = require('fs');
-// const path = require('path');
-
 
 // Function to get all coin history
 exports.getAllCoinHistory = async (req, res) => {
